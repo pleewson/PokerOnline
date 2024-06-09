@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poker Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.4.0/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stomp-websocket@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h1>Welcome to Poker Game</h1>
+
+<button onclick="startGame()">Start Game</button>
+
+<script>
+  var stompClient = null;
+
+  function connect() {
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function(frame) {
+      console.log('Connected: ' + frame);
+    });
+  }
+
+  function startGame() {
+    stompClient.send("/app/start-game", {});
+  }
+</script>
+
+</body>
+</html>
