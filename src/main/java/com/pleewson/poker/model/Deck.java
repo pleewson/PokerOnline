@@ -1,5 +1,8 @@
 package com.pleewson.poker.model;
 
+import com.pleewson.poker.enums.Rank;
+import com.pleewson.poker.enums.Suit;
+
 import java.util.ArrayList;
 import java.util.List;
 
