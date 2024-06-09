@@ -1,5 +1,7 @@
 package com.pleewson.poker.model;
 
+import com.pleewson.poker.enums.Rank;
+import com.pleewson.poker.enums.Suit;
 import lombok.Getter;
 import lombok.Setter;
 
