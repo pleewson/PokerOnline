@@ -1,7 +1,7 @@
-package com.pleewson.poker.model;
+package com.pleewson.poker.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.pleewson.poker.entities.Player;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,8 @@ import lombok.Setter;
 @Setter
 public class PlayerDetails {
     @Id
-    private Long playerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String firstName;
     private String lastName;
     private String country;
@@ -20,5 +21,8 @@ public class PlayerDetails {
     private String phone;
     private String created;
     private String updated;
+
+    @OneToOne
+    private Player player;
 
 }
