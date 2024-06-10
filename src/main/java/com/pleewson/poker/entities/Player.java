@@ -23,12 +23,13 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String nickname;
+
     @Email
     private String email;
-
     private String password;
-    private double coins;
-    private int trophies;
+    private double coins = 0;
+    private int trophies = 0;
 
     @OneToOne(mappedBy = "player")
     private PlayerDetails playerDetails;
@@ -37,7 +38,7 @@ public class Player {
     private List<Card> cards;
 
     @Transient
-    private boolean isActive;
+    private boolean isActive = true;
 
 
 }
