@@ -1,0 +1,2 @@
+    add hashing password in LoginController
+    handle invalid data in LoginController

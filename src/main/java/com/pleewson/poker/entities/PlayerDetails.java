@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -16,11 +18,8 @@ public class PlayerDetails {
     private String lastName;
     private String country;
     private String city;
-    private String street;
-    private String homeNr;
-    private String phone;
-    private String created;
-    private String updated;
+    private LocalDateTime created;
+    private LocalDateTime updated;
 
     @OneToOne
     private Player player;
