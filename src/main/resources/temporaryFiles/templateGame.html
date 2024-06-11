@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Poker Game</title>
+</head>
+<body>
+<h1>Game in Progress</h1>
+<p>Current Bet: <span id="currentBet" th:text="${game.currentBet}"></span></p>
+
+<h2>Players</h2>
+<ul id="playerList">
+  <li th:each="player : ${game.playerList}">
+    <span th:text="${player.email}"></span>
+    <span> - Coins: </span><span th:text="${player.coins}"></span>
+    <span> - Active: </span><span th:text="${player.isActive}"></span>
+  </li>
+</ul>
+
+<form action="/join-game" method="post">
+  <input type="text" name="playerName" placeholder="Enter player name" required/>
+  <button type="submit">Join Game</button>
+</form>
+
+<form id="moveForm">
+  <input type="hidden" name="playerName" value="player1@example.com" />
+  <select name="move">
+    <option value="raise">Raise</option>
+    <option value="check">Check</option>
+    <option value="fold">Fold</option>
+  </select>
+  <button type="submit">Make Move</button>
+</form>
+
+<form action="/end-game" method="post">
+  <button type="submit">End Game</button>
+</form>
+
+<script src="/app.js"></script>
+</body>
+</html>
