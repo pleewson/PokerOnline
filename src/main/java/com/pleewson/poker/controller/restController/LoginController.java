@@ -1,4 +1,4 @@
-package com.pleewson.poker.controller;
+package com.pleewson.poker.controller.restController;
 
 import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.entities.PlayerDetails;
