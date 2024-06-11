@@ -1,4 +1,4 @@
-package com.pleewson.poker.controller;
+package com.pleewson.poker.controller.restController;
 
 import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.entities.PlayerDetails;
@@ -31,9 +31,11 @@ public class LoginController {
     @PostMapping("/login")
     public String loginUser(HttpSession session, @RequestParam String email, @RequestParam String password) {
         Player player = playerRepository.findByEmail(email);
-        if (player.getPassword().equals(password)) {
-            session.setAttribute("player", player);
-            return "redirect:home";
+        if (player != null) {
+            if (player.getPassword().equals(password)) {
+                session.setAttribute("player", player);
+                return "redirect:home";
+            }
         }
         return "redirect:login";
     }

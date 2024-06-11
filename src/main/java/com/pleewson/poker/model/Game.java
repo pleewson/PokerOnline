@@ -22,6 +22,10 @@ public class Game {
         this.currentBet = 0;
     }
 
+    public Game(List<Player> playerList) {
+        this.playerList = playerList;
+    }
+
     public void addPlayer(Player player) {
         playerList.add(player);
     }
@@ -32,6 +36,9 @@ public class Game {
     public void stopGame() {
         gameStarted = false;
     }
+
+
+    //nextPlayerMove()
 
        //public void raiseBet(Player player, int amount){}
     //sprawdz czy gracz ma wystarczajaca ilosc zetonow aby podniesc zaklad,

@@ -1,4 +1,4 @@
-package com.pleewson.poker.controller;
+package com.pleewson.poker.controller.restController;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
