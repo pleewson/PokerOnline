@@ -8,9 +8,12 @@
 <body>
 
 <!--                    WebSocket -addPlayer-->
+<br>
+<br>
+
 <form id="playerJoinForm" name="playerJoinForm">
     <div class="join-button">
-        <input type="hidden" id="player" name="player" value="${session.player}">
+        <input type="hidden" id="playerId" name="playerId" th:value="${session.player.id}">
         <button type="submit">Join!</button>
     </div>
 </form>
@@ -23,19 +26,17 @@
     </div>
 </form>
 
+<div>
+   bank: <span id="bank">0</span>
+</div>
+
+<div>
+    info: <span id="info"></span>
+</div>
 
 
-<!--<div>-->
-<!--    <p>Total Bet: <span id="totalBet">${totalBet}</span></p>-->
-<!--    <form action="/raise" method="post">-->
-<!--        <input type="hidden" name="raise" value="20">-->
-<!--        <button type="submit">Raise</button>-->
-<!--    </form>-->
-<!--</div>-->
-
-
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
-<!--<script src="/game/js/main.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/game/js/main.js"></script>
 </body>
 </html>
