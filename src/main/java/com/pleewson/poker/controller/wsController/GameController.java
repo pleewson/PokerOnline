@@ -15,21 +15,26 @@ public class GameController {
     @MessageMapping("/game.nextPlayer")
     @SendTo("/topic/game")
     public Game nextPlayer(@Payload Game game) {
+
         return game;
     }
+
+
 
     @MessageMapping("/game.addPlayer")
     @SendTo("/topic/game")
     public Game addPlayer(@Payload Game game, SimpMessageHeaderAccessor headerAccessor, HttpSession session) {
         Player player = (Player) session.getAttribute("player");
 
-        if(player == null){
+        if (player == null) {
             throw new IllegalArgumentException("Player not found in session");
         }
-
-            game.addPlayer(player);
-            headerAccessor.getSessionAttributes().put("player", player);
+        System.out.println("WS - WORKS - /game.addPlayer  ----:)");
+        game.addPlayer(player);
+        headerAccessor.getSessionAttributes().put("player", player);
 
         return game;
     }
+
+    
 }
