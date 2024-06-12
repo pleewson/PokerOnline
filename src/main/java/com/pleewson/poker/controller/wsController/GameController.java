@@ -1,8 +1,7 @@
 package com.pleewson.poker.controller.wsController;
 
-import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.model.Game;
-import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -10,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 @Controller
+@Slf4j
 public class GameController {
 
     @MessageMapping("/game.nextPlayer")
@@ -23,18 +23,18 @@ public class GameController {
 
     @MessageMapping("/game.addPlayer")
     @SendTo("/topic/game")
-    public Game addPlayer(@Payload Game game, SimpMessageHeaderAccessor headerAccessor, HttpSession session) {
-        Player player = (Player) session.getAttribute("player");
+    public Game addPlayer(@Payload String playerId, SimpMessageHeaderAccessor headerAccessor) {
 
-        if (player == null) {
-            throw new IllegalArgumentException("Player not found in session");
-        }
-        System.out.println("WS - WORKS - /game.addPlayer  ----:)");
-        game.addPlayer(player);
-        headerAccessor.getSessionAttributes().put("player", player);
+        log.info("--------------->  {}  <- playerId from JS", playerId);
+//        if (player == null) {
+//            throw new IllegalArgumentException("Player not found in session");
+//        }
+//        game.addPlayer(player);
+//        headerAccessor.getSessionAttributes().put("player", player);
 
+        Game game = new Game();
         return game;
     }
 
-    
+
 }
