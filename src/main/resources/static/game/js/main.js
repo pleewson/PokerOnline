@@ -2,10 +2,10 @@
 
 let playerJoinForm = document.querySelector("#playerJoinForm");
 let makeMoveForm = document.querySelector("#makeMoveForm");
+let infoJoin = document.querySelector("#info");
 
 let playerId = null;
 let stompClient = null;
-
 
 function connect(event) {
     playerId = document.querySelector('#playerId').value;
@@ -34,13 +34,16 @@ function onConnected() {
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
+    let nickname = message.nickname;
+    infoJoin.textContent = "Welcome " + nickname;
+
+
     console.log("server message", message)
 }
 
 function onError(error) {
     console.error("ws error -------------------", error);
 }
-
 
 
 playerJoinForm.addEventListener('submit', connect, true);
