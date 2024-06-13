@@ -31,6 +31,9 @@ function onConnected() {
     stompClient.send("/websocket/game.addPlayer", {}, JSON.stringify(playerId));
 }
 
+function onError(error) {
+    console.error("ws error -------------------", error);
+}
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
@@ -41,9 +44,27 @@ function onMessageReceived(payload) {
     console.log("server message", message)
 }
 
-function onError(error) {
-    console.error("ws error -------------------", error);
+function makeMove(event) {
+    event.preventDefault();
+    let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse cursor pointer
+    console.log(moveType + " test");
+
+
+    if (moveType && stompClient) {
+        if (moveType === 'raise') {
+            //TODO
+            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+        } else if (moveType === 'bet') {
+            //TODO
+            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+        } else if (moveType === 'fold') {
+            //TODO
+            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+
+        }
+    }
 }
 
 
 playerJoinForm.addEventListener('submit', connect, true);
+makeMoveForm.addEventListener('submit', makeMove, true);

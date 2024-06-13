@@ -18,7 +18,7 @@ public class WebSocketEventListener {
     private final SimpMessageSendingOperations messageTemplate;
 
 
-    //TODO - change session attribute, get playerId instead player Object
+    //TODO - change session attribute, get playerId instead player Object and add it in GameController
     @EventListener
     public void handleWebSocketDisconnectListener(
             SessionDisconnectEvent event

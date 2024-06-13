@@ -50,10 +50,17 @@ public class GameController {
         mapJSON.put("nickname", player.getNickname());
 
         return mapJSON;
-    }
 
+    }
     //TODO^
 //        game.addPlayer(player);  add Player to game
 
+
+    @MessageMapping("/game.makeMove")
+    @SendTo("/topic/game")
+    public String makeMove(@Payload String moveTypeJSON) {
+        log.info("move type -=-=-=-=-=-=-=-> " + moveTypeJSON);
+        return "himalaje";
+    }
 
 }
