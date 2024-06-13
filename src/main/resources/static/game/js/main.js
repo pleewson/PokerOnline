@@ -1,37 +1,70 @@
 'use strict';
 
-var playerJoinForm = document.querySelector("#playerJoinForm");
-var makeMoveForm = document.querySelector("#makeMoveForm");
+let playerJoinForm = document.querySelector("#playerJoinForm");
+let makeMoveForm = document.querySelector("#makeMoveForm");
+let infoJoin = document.querySelector("#info");
 
-var player  = null;
-
-// var stompClient = null;
+let playerId = null;
+let stompClient = null;
 
 function connect(event) {
-    player = document.querySelector('#player');
+    playerId = document.querySelector('#playerId').value;
 
-    if (player) {
+    if (playerId) {
+
         playerJoinForm.classList.add('hidden');
         makeMoveForm.classList.remove('hidden');
+
+        let socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, onConnected, onError);
     }
 
-    var socket = new SockJS('/ws');
-    stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, onConneted, onError)
+    event.preventDefault();
 }
-
 
 function onConnected() {
     //subscribe to the game topic
-    stompClient.subscribe('/topic/game', onMessageRecived)
+    stompClient.subscribe('/topic/game', onMessageReceived)
     //sending player object to server
-    stompClient.send("/game.addPlayer", {}, JSON.stringify(player));
+    stompClient.send("/websocket/game.addPlayer", {}, JSON.stringify(playerId));
+}
+
+function onError(error) {
+    console.error("ws error -------------------", error);
+}
+
+function onMessageReceived(payload) {
+    let message = JSON.parse(payload.body);
+    let nickname = message.nickname;
+    infoJoin.textContent = "Welcome " + nickname;
+
+
+    console.log("server message", message)
+}
+
+function makeMove(event) {
+    event.preventDefault();
+    let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse cursor pointer
+    console.log(moveType + " test");
+
+
+    if (moveType && stompClient) {
+        if (moveType === 'raise') {
+            //TODO
+            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+        } else if (moveType === 'bet') {
+            //TODO
+            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+        } else if (moveType === 'fold') {
+            //TODO
+            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+
+        }
+    }
 }
 
 
-function onMessageRecived() {
-    //TODO
-}
-
-// playerJoin.addEventListener('submit',connect,true)
+playerJoinForm.addEventListener('submit', connect, true);
+makeMoveForm.addEventListener('submit', makeMove, true);

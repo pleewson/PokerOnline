@@ -1,35 +1,66 @@
 package com.pleewson.poker.controller.wsController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.model.Game;
-import jakarta.servlet.http.HttpSession;
+import com.pleewson.poker.repository.PlayerRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
+@Slf4j
 public class GameController {
+
+    private final PlayerRepository playerRepository;
+
+    public GameController(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
 
     @MessageMapping("/game.nextPlayer")
     @SendTo("/topic/game")
     public Game nextPlayer(@Payload Game game) {
+
         return game;
     }
+
 
     @MessageMapping("/game.addPlayer")
     @SendTo("/topic/game")
-    public Game addPlayer(@Payload Game game, SimpMessageHeaderAccessor headerAccessor, HttpSession session) {
-        Player player = (Player) session.getAttribute("player");
+    public Map<String, String> addPlayer(@Payload String playerIdJSON, SimpMessageHeaderAccessor headerAccessor) {
+        log.info("--------------->  {}  <- playerId from JS", playerIdJSON);
 
-        if(player == null){
+        if (playerIdJSON == null) {
             throw new IllegalArgumentException("Player not found in session");
         }
 
-            game.addPlayer(player);
-            headerAccessor.getSessionAttributes().put("player", player);
+        String playerIdStr = playerIdJSON.replace("\"", "");
+        Player player = playerRepository.findById(Long.parseLong(playerIdStr)).orElseThrow(() -> new EntityNotFoundException());
 
-        return game;
+        Map<String, String> mapJSON = new HashMap<>();
+        mapJSON.put("nickname", player.getNickname());
+
+        return mapJSON;
+
     }
+    //TODO^
+//        game.addPlayer(player);  add Player to game
+
+
+    @MessageMapping("/game.makeMove")
+    @SendTo("/topic/game")
+    public String makeMove(@Payload String moveTypeJSON) {
+        log.info("move type -=-=-=-=-=-=-=-> " + moveTypeJSON);
+        return "himalaje";
+    }
+
 }
