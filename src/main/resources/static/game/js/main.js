@@ -1,12 +1,15 @@
 'use strict';
 
 let playerJoinForm = document.querySelector("#playerJoinForm");
-let makeMoveForm = document.querySelector("#makeMoveForm");
+let makeMoveFormPlayer1 = document.querySelector("#makeMoveFormPlayer1");
+let makeMoveFormPlayer2 = document.querySelector("#makeMoveFormPlayer2");
 let infoJoin = document.querySelector("#info");
 let gameView = document.querySelector("#gameView");
+let bankDisplay = document.querySelector("#bank")
 
 let playerId = null;
 let stompClient = null;
+let playerNumber = null;
 
 function connect(event) {
     playerId = document.querySelector('#playerId').value;
@@ -51,28 +54,27 @@ function onMessageReceived(payload) {
 
         console.log("list size -> " + numberOfPlayers);
         console.log("server message", message);
+
+        // Determine player number based on received message
+        if (message.playerId === playerId) {
+            playerNumber = 1;
+        } else {
+            playerNumber = 2;
+        }
     }
 }
 
 function makeMove(event) {
     event.preventDefault();
-    let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse cursor pointer
+    let moveType = event.target.querySelector("button[type=submit]:focus").value;
     console.log(moveType + " test");
 
-
-    if (moveType && stompClient) {
-        if (moveType === 'raise') {
-            //TODO
-            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-        } else if (moveType === 'bet') {
-            //TODO
-            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-        } else if (moveType === 'fold') {
-            //TODO
-            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
+    if (moveType && stompClient && playerNumber) {
+            let destination = '/websocket/game.makeMove.${playerNumber}';
+            stompClient.send(destination, {}, JSON.stringify(moveType))
         }
     }
-}
+
 
 window.addEventListener("beforeunload", () => {
     if (stompClient) {
@@ -91,4 +93,5 @@ function onDisconnected() {
 
 
 playerJoinForm.addEventListener('submit', connect, true);
-makeMoveForm.addEventListener('submit', makeMove, true);
+makeMoveFormPlayer1.addEventListener('submit', makeMove, true);
+makeMoveFormPlayer2.addEventListener('submit', makeMove, true);

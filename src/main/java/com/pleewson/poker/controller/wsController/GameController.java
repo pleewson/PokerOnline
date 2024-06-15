@@ -60,6 +60,7 @@ public class GameController {
 
         Map<String, Object> mapJSON = new HashMap<>();
         mapJSON.put("nickname", player.getNickname());
+        mapJSON.put("playerId", player.getId());
         mapJSON.put("numberOfPlayers", gameService.getGame().getPlayerList().size());
 
         return mapJSON;
