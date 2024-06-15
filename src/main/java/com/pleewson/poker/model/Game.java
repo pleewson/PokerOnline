@@ -22,14 +22,14 @@ public class Game {
         this.currentBet = 0;
     }
 
-    public Game(List<Player> playerList) {
-        this.playerList = playerList;
-    }
+//    public Game(List<Player> playerList) {
+//        this.playerList = playerList;
+//    }
 
-    public void addPlayer(Player player) {
+
+    public void addPlayer(Player player){
         playerList.add(player);
     }
-
     public void startGame() {
         gameStarted = true;
     }
@@ -38,19 +38,6 @@ public class Game {
     }
 
 
-    //nextPlayerMove()
-
-       //public void raiseBet(Player player, int amount){}
-    //sprawdz czy gracz ma wystarczajaca ilosc zetonow aby podniesc zaklad,
-    //jesli ma zabierz mu zetony i dodaj do currentBet
-    //jesli nie ma wyswietl komunikat o braku zetonow
-
-    //public void checkBet(Player player(){}
-    //jesli gracz sprawdza zaklad, nic robi nic
-
-//    public void fold(Player player){}
-    //obsluga passowania przez gracza
-    //mozna go zdezaktywowac na dana ture
 
 
 }
