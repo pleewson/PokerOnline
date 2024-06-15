@@ -46,6 +46,8 @@ public class GameController {
         String playerIdStr = playerIdJSON.replace("\"", "");
         Player player = playerRepository.findById(Long.parseLong(playerIdStr)).orElseThrow(() -> new EntityNotFoundException());
 
+        headerAccessor.getSessionAttributes().put("playerId", player.getId());
+
         //creating game
         Game game = gameService.getGame();
         if (game == null) {

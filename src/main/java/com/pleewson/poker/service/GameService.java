@@ -30,6 +30,10 @@ public class GameService {
         game.addPlayer(player);
     }
 
+    public void removePlayer(Long playerId){
+        game.getPlayerList().removeIf(player -> player.getId().equals(playerId));
+    }
+
 
 
     //    public void makeMove(){};

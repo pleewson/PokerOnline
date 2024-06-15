@@ -12,7 +12,6 @@ function connect(event) {
     playerId = document.querySelector('#playerId').value;
 
     if (playerId) {
-
         let socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
@@ -35,17 +34,24 @@ function onError(error) {
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
-    let nickname = message.nickname;
-    let numberOfPlayers = message.numberOfPlayers;
-    infoJoin.textContent = "Welcome " + nickname;
 
-    if(numberOfPlayers === 2){
-        playerJoinForm.classList.add('hidden');
-        gameView.classList.remove('hidden');
+    if (message.type === "disconnect") {
+        console.log("user has disconnected 123123123123123123123123 ");
+        onDisconnected();
+    } else {
+
+        let nickname = message.nickname;
+        let numberOfPlayers = message.numberOfPlayers;
+        infoJoin.textContent = "Welcome " + nickname;
+
+        if (numberOfPlayers === 2) {
+            playerJoinForm.classList.add('hidden');
+            gameView.classList.remove('hidden');
+        }
+
+        console.log("list size -> " + numberOfPlayers);
+        console.log("server message", message);
     }
-
-    console.log("list size -> " + numberOfPlayers);
-    console.log("server message", message);
 }
 
 function makeMove(event) {
@@ -64,9 +70,23 @@ function makeMove(event) {
         } else if (moveType === 'fold') {
             //TODO
             stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-
         }
     }
+}
+
+window.addEventListener("beforeunload", () => {
+    if (stompClient) {
+        stompClient.disconnect(() => {
+            onDisconnected("Rozłączono z serwerem WebSocket");
+        });
+    }
+});
+
+function onDisconnected() {
+    playerJoinForm.classList.remove('hidden');
+    gameView.classList.add('hidden');
+
+    infoJoin.textContent = "Second player has disconnected ";
 }
 
 

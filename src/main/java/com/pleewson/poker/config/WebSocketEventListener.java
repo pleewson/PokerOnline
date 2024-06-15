@@ -1,14 +1,17 @@
 package com.pleewson.poker.config;
 
-import com.pleewson.poker.entities.Player;
-import lombok.AllArgsConstructor;
+import com.pleewson.poker.service.GameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -16,20 +19,21 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 public class WebSocketEventListener {
 
     private final SimpMessageSendingOperations messageTemplate;
+    @Autowired
+    private GameService gameService;
 
-
-    //TODO - change session attribute, get playerId instead player Object and add it in GameController
     @EventListener
-    public void handleWebSocketDisconnectListener(
-            SessionDisconnectEvent event
-    ) {
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        Player player = (Player) headerAccessor.getSessionAttributes().get("player");
+        Long playerId = (Long) headerAccessor.getSessionAttributes().get("playerId");
 
-        if (player != null) {
-            String nickname = player.getNickname();
-            log.info("LOGGGGGEEEER -> WebSocket user disconnected: {}", nickname);
-            messageTemplate.convertAndSend("topic/game", nickname + " has left the game");
+        if (playerId != null) {
+            gameService.removePlayer(playerId);
+            log.info("LOGGGGGEEEER -> WebSocket user disconnected with ID : {}", playerId);
+
+            Map<String,Object> disconnectMessage = new HashMap<>();
+            disconnectMessage.put("type", "disconnect");
+            messageTemplate.convertAndSend("/topic/game", disconnectMessage);
         }
     }
 }
