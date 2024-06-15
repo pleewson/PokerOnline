@@ -65,8 +65,6 @@ public class GameController {
 
         return mapJSON;
     }
-    //TODO^
-//        game.addPlayer(plyer);  add Player to game
 
 
     @MessageMapping("/game.makeMove")

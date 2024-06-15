@@ -10,6 +10,7 @@ let bankDisplay = document.querySelector("#bank")
 let playerId = null;
 let stompClient = null;
 let playerNumber = null;
+let currentPlayer = 1;
 
 function connect(event) {
     playerId = document.querySelector('#playerId').value;
@@ -42,7 +43,6 @@ function onMessageReceived(payload) {
         console.log("user has disconnected 123123123123123123123123 ");
         onDisconnected();
     } else {
-
         let nickname = message.nickname;
         let numberOfPlayers = message.numberOfPlayers;
         infoJoin.textContent = "Welcome " + nickname;
@@ -61,20 +61,35 @@ function onMessageReceived(payload) {
         } else {
             playerNumber = 2;
         }
+
+        currentPlayer = (currentPlayer === 1) ? 2 : 1;
+        updateUI();
+
     }
 }
 
 function makeMove(event) {
     event.preventDefault();
-    let moveType = event.target.querySelector("button[type=submit]:focus").value;
+    let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse point
     console.log(moveType + " test");
 
     if (moveType && stompClient && playerNumber) {
-            let destination = '/websocket/game.makeMove.${playerNumber}';
-            stompClient.send(destination, {}, JSON.stringify(moveType))
-        }
-    }
 
+        let destination = '/websocket/game.makeMove.${playerNumber}';
+        stompClient.send(destination, {}, JSON.stringify(moveType))
+    }
+}
+
+
+function updateUI() {
+    if (currentPlayer === 1) {
+        makeMoveFormPlayer1.classList.remove('hidden');
+        makeMoveFormPlayer2.classList.add('hidden');
+    } else {
+        makeMoveFormPlayer2.classList.remove('hidden');
+        makeMoveFormPlayer1.classList.add('hidden');
+    }
+}
 
 window.addEventListener("beforeunload", () => {
     if (stompClient) {
@@ -91,7 +106,9 @@ function onDisconnected() {
     infoJoin.textContent = "Second player has disconnected ";
 }
 
-
 playerJoinForm.addEventListener('submit', connect, true);
 makeMoveFormPlayer1.addEventListener('submit', makeMove, true);
 makeMoveFormPlayer2.addEventListener('submit', makeMove, true);
+
+
+//TODO serve logic in controller line:78   game.makeMove.${playerNumber}
