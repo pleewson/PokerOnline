@@ -1,7 +1,5 @@
 package com.pleewson.poker.controller.wsController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.model.Game;
 import com.pleewson.poker.repository.PlayerRepository;
@@ -29,7 +27,6 @@ public class GameController {
     @MessageMapping("/game.nextPlayer")
     @SendTo("/topic/game")
     public Game nextPlayer(@Payload Game game) {
-
         return game;
     }
 
@@ -53,7 +50,8 @@ public class GameController {
 
     }
     //TODO^
-//        game.addPlayer(player);  add Player to game
+//        game.addPlayer(plyer);  add Player to game
+
 
 
     @MessageMapping("/game.makeMove")
