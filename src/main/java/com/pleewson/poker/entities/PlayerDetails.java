@@ -1,6 +1,5 @@
 package com.pleewson.poker.entities;
 
-import com.pleewson.poker.entities.Player;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

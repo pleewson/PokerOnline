@@ -3,6 +3,7 @@
 let playerJoinForm = document.querySelector("#playerJoinForm");
 let makeMoveForm = document.querySelector("#makeMoveForm");
 let infoJoin = document.querySelector("#info");
+let gameView = document.querySelector("#gameView");
 
 let playerId = null;
 let stompClient = null;
@@ -11,10 +12,6 @@ function connect(event) {
     playerId = document.querySelector('#playerId').value;
 
     if (playerId) {
-
-        playerJoinForm.classList.add('hidden');
-        makeMoveForm.classList.remove('hidden');
-
         let socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
@@ -37,11 +34,24 @@ function onError(error) {
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
-    let nickname = message.nickname;
-    infoJoin.textContent = "Welcome " + nickname;
 
+    if (message.type === "disconnect") {
+        console.log("user has disconnected 123123123123123123123123 ");
+        onDisconnected();
+    } else {
 
-    console.log("server message", message)
+        let nickname = message.nickname;
+        let numberOfPlayers = message.numberOfPlayers;
+        infoJoin.textContent = "Welcome " + nickname;
+
+        if (numberOfPlayers === 2) {
+            playerJoinForm.classList.add('hidden');
+            gameView.classList.remove('hidden');
+        }
+
+        console.log("list size -> " + numberOfPlayers);
+        console.log("server message", message);
+    }
 }
 
 function makeMove(event) {
@@ -60,9 +70,23 @@ function makeMove(event) {
         } else if (moveType === 'fold') {
             //TODO
             stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-
         }
     }
+}
+
+window.addEventListener("beforeunload", () => {
+    if (stompClient) {
+        stompClient.disconnect(() => {
+            onDisconnected("Rozłączono z serwerem WebSocket");
+        });
+    }
+});
+
+function onDisconnected() {
+    playerJoinForm.classList.remove('hidden');
+    gameView.classList.add('hidden');
+
+    infoJoin.textContent = "Second player has disconnected ";
 }
 
 

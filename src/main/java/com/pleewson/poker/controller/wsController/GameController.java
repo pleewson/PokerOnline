@@ -1,10 +1,9 @@
 package com.pleewson.poker.controller.wsController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.model.Game;
 import com.pleewson.poker.repository.PlayerRepository;
+import com.pleewson.poker.service.GameService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,22 +20,23 @@ import java.util.Map;
 public class GameController {
 
     private final PlayerRepository playerRepository;
+    private final GameService gameService;
 
-    public GameController(PlayerRepository playerRepository) {
+    public GameController(PlayerRepository playerRepository, GameService gameService) {
         this.playerRepository = playerRepository;
+        this.gameService = gameService;
     }
 
     @MessageMapping("/game.nextPlayer")
     @SendTo("/topic/game")
     public Game nextPlayer(@Payload Game game) {
-
         return game;
     }
 
 
     @MessageMapping("/game.addPlayer")
     @SendTo("/topic/game")
-    public Map<String, String> addPlayer(@Payload String playerIdJSON, SimpMessageHeaderAccessor headerAccessor) {
+    public Map<String, Object> addPlayer(@Payload String playerIdJSON, SimpMessageHeaderAccessor headerAccessor) {
         log.info("--------------->  {}  <- playerId from JS", playerIdJSON);
 
         if (playerIdJSON == null) {
@@ -46,21 +46,37 @@ public class GameController {
         String playerIdStr = playerIdJSON.replace("\"", "");
         Player player = playerRepository.findById(Long.parseLong(playerIdStr)).orElseThrow(() -> new EntityNotFoundException());
 
-        Map<String, String> mapJSON = new HashMap<>();
+        headerAccessor.getSessionAttributes().put("playerId", player.getId());
+
+        //creating game
+        Game game = gameService.getGame();
+        if (game == null) {
+            game = gameService.createNewGame();
+        }
+
+        gameService.addPlayer(player);
+
+        log.info("---- playerList size --- {} ---- ", game.getPlayerList().size());
+
+        Map<String, Object> mapJSON = new HashMap<>();
         mapJSON.put("nickname", player.getNickname());
+        mapJSON.put("numberOfPlayers", gameService.getGame().getPlayerList().size());
 
         return mapJSON;
-
     }
     //TODO^
-//        game.addPlayer(player);  add Player to game
+//        game.addPlayer(plyer);  add Player to game
 
 
     @MessageMapping("/game.makeMove")
     @SendTo("/topic/game")
     public String makeMove(@Payload String moveTypeJSON) {
         log.info("move type -=-=-=-=-=-=-=-> " + moveTypeJSON);
+
         return "himalaje";
     }
+
+    //TODO^
+    //        moveType - operations
 
 }
