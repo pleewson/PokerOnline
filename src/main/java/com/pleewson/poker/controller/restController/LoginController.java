@@ -67,7 +67,4 @@ public class LoginController {
 
         return "redirect:home";
     }
-
-
-    // nickname:<input type="text" name="nickname"/> </br>
 }
