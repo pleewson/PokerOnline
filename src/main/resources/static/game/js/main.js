@@ -10,7 +10,7 @@ let bankDisplay = document.querySelector("#bank")
 let playerId = null;
 let stompClient = null;
 let playerNumber = null;
-let currentPlayer = 1;
+let currentPlayer = null;
 
 function connect(event) {
     playerId = document.querySelector('#playerId').value;
@@ -45,7 +45,11 @@ function onMessageReceived(payload) {
     } else {
         let nickname = message.nickname;
         let numberOfPlayers = message.numberOfPlayers;
+        currentPlayer = message.currentPlayer;
+        playerNumber = message.playerNumber;
+
         infoJoin.textContent = "Welcome " + nickname;
+        console.log("current player --> " + currentPlayer + "  playerNumber -> " + playerNumber);
 
         if (numberOfPlayers === 2) {
             playerJoinForm.classList.add('hidden');
@@ -55,14 +59,6 @@ function onMessageReceived(payload) {
         console.log("list size -> " + numberOfPlayers);
         console.log("server message", message);
 
-        // Determine player number based on received message
-        if (message.playerId === playerId) {
-            playerNumber = 1;
-        } else {
-            playerNumber = 2;
-        }
-
-        currentPlayer = (currentPlayer === 1) ? 2 : 1;
         updateUI();
 
     }
@@ -76,20 +72,26 @@ function makeMove(event) {
     if (moveType && stompClient && playerNumber) {
 
         let destination = '/websocket/game.makeMove.${playerNumber}';
-        stompClient.send(destination, {}, JSON.stringify(moveType))
+        stompClient.send(destination, {}, JSON.stringify({moveType, playerId}));
     }
 }
 
 
 function updateUI() {
-    if (currentPlayer === 1) {
-        makeMoveFormPlayer1.classList.remove('hidden');
-        makeMoveFormPlayer2.classList.add('hidden');
+    if (currentPlayer === playerNumber) {
+        if (playerNumber === 1) {
+            makeMoveFormPlayer1.classList.remove('hidden');
+            makeMoveFormPlayer2.classList.add('hidden');
+        } else {
+            makeMoveFormPlayer2.classList.remove('hidden');
+            makeMoveFormPlayer1.classList.add('hidden');
+        }
     } else {
-        makeMoveFormPlayer2.classList.remove('hidden');
-        makeMoveFormPlayer1.classList.add('hidden');
+        makeMoveFormPlayer1.classList.add("hidden");
+        makeMoveFormPlayer2.classList.add("hidden");
     }
 }
+
 
 window.addEventListener("beforeunload", () => {
     if (stompClient) {

@@ -21,16 +21,12 @@ public class GameController {
 
     private final PlayerRepository playerRepository;
     private final GameService gameService;
+    private Long currentPlayer;
 
     public GameController(PlayerRepository playerRepository, GameService gameService) {
         this.playerRepository = playerRepository;
         this.gameService = gameService;
-    }
-
-    @MessageMapping("/game.nextPlayer")
-    @SendTo("/topic/game")
-    public Game nextPlayer(@Payload Game game) {
-        return game;
+        currentPlayer = 2L;
     }
 
 
@@ -58,24 +54,49 @@ public class GameController {
 
         log.info("---- playerList size --- {} ---- ", game.getPlayerList().size());
 
+        //player number based on the current number of player in the game
+        int playerNumber = game.getPlayerList().indexOf(player) + 1;
+
         Map<String, Object> mapJSON = new HashMap<>();
         mapJSON.put("nickname", player.getNickname());
         mapJSON.put("playerId", player.getId());
         mapJSON.put("numberOfPlayers", gameService.getGame().getPlayerList().size());
+        mapJSON.put("currentPlayer", currentPlayer);
+        mapJSON.put("playerNumber", playerNumber);
 
         return mapJSON;
     }
 
 
-    @MessageMapping("/game.makeMove")
+    @MessageMapping("/game.makeMove.1")
     @SendTo("/topic/game")
-    public String makeMove(@Payload String moveTypeJSON) {
-        log.info("move type -=-=-=-=-=-=-=-> " + moveTypeJSON);
+    public Map<String, Object> makeMovePlayer1(@Payload String moveTypeJSON) {
+        if (currentPlayer.equals(1L)) {
+//            gameService.makeMove
+            currentPlayer = 2L;
+        }
 
-        return "himalaje";
+        Map<String, Object> mapJSON = new HashMap<>();
+        mapJSON.put("currentPlayer", currentPlayer);
+        return mapJSON;
     }
 
+
+    @MessageMapping("/game.makeMove.2")
+    @SendTo("/topic/game")
+    public Map<String, Object> makeMovePlayer2(@Payload String moveTypeJSON) {
+        if (currentPlayer.equals(2L)) {
+//            gameService.makeMove
+            currentPlayer = 1L;
+        }
+
+        Map<String, Object> mapJSON = new HashMap<>();
+        mapJSON.put("currentPlayer", currentPlayer);
+        return mapJSON;
+    }
+
+
     //TODO^
-    //        moveType - operations
+    //        makeMove - operations
 
 }
