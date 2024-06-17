@@ -8,9 +8,6 @@
 <body>
 
 <!--                    WebSocket -addPlayer-->
-<br>
-<br>
-
 <form id="playerJoinForm" name="playerJoinForm">
     <div class="join-button">
         <input type="hidden" id="playerId" name="playerId" th:value="${session.player.id}">
@@ -19,15 +16,24 @@
 </form>
 
 
-<div id="gameView" class="hidden">
-    <p>Game Started!</p>
-    <form id="makeMoveForm" name="makeMoveForm">
-        <div class="make-move">
+<div id="gameView" class="game-view hidden">
+    <div id="player1" class="player-box">
+        <h2>Player 1</h2>
+        <form id="makeMoveFormPlayer1" class="makeMoveForm">
             <button type="submit" class="move_button" value="raise">Raise</button>
             <button type="submit" class="move_button" value="bet">Bet</button>
             <button type="submit" class="move_button" value="fold">Fold</button>
-        </div>
-    </form>
+        </form>
+    </div>
+
+    <div id="player2" class="player-box">
+        <h2>Player 2</h2>
+        <form id="makeMoveFormPlayer2" class="makeMoveForm">
+            <button type="submit" class="move_button" value="raise">Raise</button>
+            <button type="submit" class="move_button" value="bet">Bet</button>
+            <button type="submit" class="move_button" value="fold">Fold</button>
+        </form>
+    </div>
 </div>
 
 

@@ -1,12 +1,16 @@
 'use strict';
 
 let playerJoinForm = document.querySelector("#playerJoinForm");
-let makeMoveForm = document.querySelector("#makeMoveForm");
+let makeMoveFormPlayer1 = document.querySelector("#makeMoveFormPlayer1");
+let makeMoveFormPlayer2 = document.querySelector("#makeMoveFormPlayer2");
 let infoJoin = document.querySelector("#info");
 let gameView = document.querySelector("#gameView");
+let bankDisplay = document.querySelector("#bank")
 
 let playerId = null;
 let stompClient = null;
+let playerNumber = null;
+let currentPlayer = null;
 
 function connect(event) {
     playerId = document.querySelector('#playerId').value;
@@ -39,10 +43,13 @@ function onMessageReceived(payload) {
         console.log("user has disconnected 123123123123123123123123 ");
         onDisconnected();
     } else {
-
         let nickname = message.nickname;
         let numberOfPlayers = message.numberOfPlayers;
+        currentPlayer = message.currentPlayer;
+        playerNumber = message.playerNumber;
+
         infoJoin.textContent = "Welcome " + nickname;
+        console.log("current player --> " + currentPlayer + "  playerNumber -> " + playerNumber);
 
         if (numberOfPlayers === 2) {
             playerJoinForm.classList.add('hidden');
@@ -51,28 +58,40 @@ function onMessageReceived(payload) {
 
         console.log("list size -> " + numberOfPlayers);
         console.log("server message", message);
+
+        updateUI();
+
     }
 }
 
 function makeMove(event) {
     event.preventDefault();
-    let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse cursor pointer
+    let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse point
     console.log(moveType + " test");
 
+    if (moveType && stompClient && playerNumber) {
 
-    if (moveType && stompClient) {
-        if (moveType === 'raise') {
-            //TODO
-            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-        } else if (moveType === 'bet') {
-            //TODO
-            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-        } else if (moveType === 'fold') {
-            //TODO
-            stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveType));
-        }
+        let destination = '/websocket/game.makeMove.${playerNumber}';
+        stompClient.send(destination, {}, JSON.stringify({moveType, playerId}));
     }
 }
+
+
+function updateUI() {
+    if (currentPlayer === playerNumber) {
+        if (playerNumber === 1) {
+            makeMoveFormPlayer1.classList.remove('hidden');
+            makeMoveFormPlayer2.classList.add('hidden');
+        } else {
+            makeMoveFormPlayer2.classList.remove('hidden');
+            makeMoveFormPlayer1.classList.add('hidden');
+        }
+    } else {
+        makeMoveFormPlayer1.classList.add("hidden");
+        makeMoveFormPlayer2.classList.add("hidden");
+    }
+}
+
 
 window.addEventListener("beforeunload", () => {
     if (stompClient) {
@@ -89,6 +108,9 @@ function onDisconnected() {
     infoJoin.textContent = "Second player has disconnected ";
 }
 
-
 playerJoinForm.addEventListener('submit', connect, true);
-makeMoveForm.addEventListener('submit', makeMove, true);
+makeMoveFormPlayer1.addEventListener('submit', makeMove, true);
+makeMoveFormPlayer2.addEventListener('submit', makeMove, true);
+
+
+//TODO serve logic in controller line:78   game.makeMove.${playerNumber}
