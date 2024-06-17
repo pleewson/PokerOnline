@@ -30,10 +30,9 @@ public class GameService {
         game.addPlayer(player);
     }
 
-    public void removePlayer(Long playerId){
+    public void removePlayer(Long playerId) {
         game.getPlayerList().removeIf(player -> player.getId().equals(playerId));
     }
-
 
 
     //    public void makeMove(){};
@@ -46,7 +45,13 @@ public class GameService {
     }
 
 
-    //nextPlayerMove()
+    public void nextPlayer() {
+        if (game.getCurrentPlayer() == 1L) {
+            game.setCurrentPlayer(2L);
+        } else {
+            game.setCurrentPlayer(1L);
+        }
+    }
 
     //public void raiseBet(Player player, int amount){}
     //sprawdz czy gracz ma wystarczajaca ilosc zetonow aby podniesc zaklad,

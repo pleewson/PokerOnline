@@ -15,11 +15,14 @@ public class Game {
     private boolean gameStarted;
     private List<Card> communityCards;
     private int currentBet;
+    private Long  currentPlayer;
 
     public Game() {
         this.playerList = new ArrayList<>();
         this.gameStarted = false;
         this.currentBet = 0;
+        this.communityCards = new ArrayList<>();
+        this.currentPlayer = 1L;
     }
 
 //    public Game(List<Player> playerList) {

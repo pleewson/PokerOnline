@@ -11,6 +11,7 @@ let playerId = null;
 let stompClient = null;
 let playerNumber = null;
 let currentPlayer = null;
+let isGameStarted = false;
 
 function connect(event) {
     playerId = document.querySelector('#playerId').value;
@@ -44,19 +45,18 @@ function onMessageReceived(payload) {
         onDisconnected();
     } else {
         let nickname = message.nickname;
-        let numberOfPlayers = message.numberOfPlayers;
         currentPlayer = message.currentPlayer;
         playerNumber = message.playerNumber;
+        isGameStarted = message.gameStarted;
 
         infoJoin.textContent = "Welcome " + nickname;
         console.log("current player --> " + currentPlayer + "  playerNumber -> " + playerNumber);
 
-        if (numberOfPlayers === 2) {
+        if (isGameStarted === true) {
             playerJoinForm.classList.add('hidden');
             gameView.classList.remove('hidden');
         }
 
-        console.log("list size -> " + numberOfPlayers);
         console.log("server message", message);
 
         updateUI();
@@ -69,10 +69,14 @@ function makeMove(event) {
     let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse point
     console.log(moveType + " test");
 
-    if (moveType && stompClient && playerNumber) {
+    if (moveType && stompClient && currentPlayer === playerNumber) {
 
-        let destination = '/websocket/game.makeMove.${playerNumber}';
-        stompClient.send(destination, {}, JSON.stringify({moveType, playerId}));
+        let moveRequest = {
+            playerId: playerId,
+            moveType: moveType
+        };
+
+        stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveRequest));
     }
 }
 
