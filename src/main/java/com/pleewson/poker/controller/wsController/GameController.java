@@ -40,7 +40,6 @@ public class GameController {
 
         String playerIdStr = playerId.replace("\"", "");
         Player player = playerRepository.findById(Long.parseLong(playerIdStr)).orElseThrow(() -> new EntityNotFoundException());
-        log.info("------ PLAYER NICKNAME :  " + player.getNickname());
 
         headerAccessor.getSessionAttributes().put("playerId", player.getId());
 
@@ -56,41 +55,54 @@ public class GameController {
             gameService.startGame();
         }
 
+        player.setPlayerNumber(gameService.getGame().getPlayerList().size()); // nowe
+
         log.info("---- playerList size --- {} ---- ", game.getPlayerList().size());
+        log.info("------ PLAYER NICKNAME : {}   PLAYER NUMBER  -> {}", player.getNickname(), player.getPlayerNumber());
 
-        return createGameStateResponse();
+        return createGameStateResponse(player.getPlayerNumber());
     }
 
-
-    @MessageMapping("/game.makeMove")
-    @SendTo("/topic/game")
-    public Map<String, Object> makeMove(@Payload MoveRequest moveRequest) {
-        Game game = gameService.getGame();
-
-        System.out.println("JSON makeMove     -=-=-=-  " + moveRequest);
-
-        if (game.getCurrentPlayer().equals(moveRequest.getPlayerId())) {
-            gameService.nextPlayer();
-            return createGameStateResponse();
-        }
-
-        throw new IllegalStateException("Not the current player's turn");
-
-    }
+//
+//    @MessageMapping("/game.makeMove")
+//    @SendTo("/topic/game")
+//    public Map<String, Object> makeMove(@Payload MoveRequest moveRequest) {
+//        Game game = gameService.getGame();
+//        System.out.println("JSON makeMove     -=-=-=-  " + moveRequest);
+//
+//        int currentPlayerNumber = game.getCurrentPlayer();
+//
+//        Player player = game.getPlayerList().stream()
+//                .filter(p -> p.getId().equals(moveRequest.getPlayerId()))
+//                .findFirst()
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid player ID"));
+//
+//        if (game.getCurrentPlayer() == player.getPlayerNumber()) {
+//
+//            gameService.nextPlayer();
+//            return createGameStateResponse(player.getPlayerNumber());
+//        }
+//
+//        throw new IllegalStateException("Not the current player's turn");
+//
+//    }
 
     //TODO^
     //        makeMove - operations
 
-    private Map<String, Object> createGameStateResponse() {
+
+    private Map<String, Object> createGameStateResponse(int playerNumber) {
         Game game = gameService.getGame();
 
         Map<String, Object> gameState = new HashMap<>();
-        gameState.put("playerList", game.getPlayerList());
+//        gameState.put("playerList", game.getPlayerList());
         gameState.put("gameStarted", game.isGameStarted());
         gameState.put("communityCards", game.getCommunityCards());
         gameState.put("currentBet", game.getCurrentBet());
-        gameState.put("currentPlayer", game.getCurrentPlayer()); //TODO - fix it
-        gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size()-1).getNickname());
+        gameState.put("currentPlayer", game.getCurrentPlayer());
+        gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
+        gameState.put("playerNumber", playerNumber);
+
 
         return gameState;
     }
