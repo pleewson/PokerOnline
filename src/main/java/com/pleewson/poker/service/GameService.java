@@ -57,18 +57,21 @@ public class GameService {
     }
 
 
-    public void processMove(Player player, String moveType) {
+    public void processMove(Game game, Player player, String moveType) {
         switch (moveType) {
             case "bet": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
+                game.setCurrentBet((game.getCurrentBet()) + 20); //TEST VALUE
                 break;
             }
             case "check": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
+                game.setCurrentBet((game.getCurrentBet()) + 1);  //TEST VALUE
                 break;
             }
             case "fold": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
+                game.setCurrentBet((game.getCurrentBet()) - 20); //TEST VALUE
                 break;
             }
             default:

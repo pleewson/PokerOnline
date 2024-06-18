@@ -63,29 +63,28 @@ public class GameController {
         return createGameStateResponse(player.getPlayerNumber());
     }
 
-//
-//    @MessageMapping("/game.makeMove")
-//    @SendTo("/topic/game")
-//    public Map<String, Object> makeMove(@Payload MoveRequest moveRequest) {
-//        Game game = gameService.getGame();
-//        System.out.println("JSON makeMove     -=-=-=-  " + moveRequest);
-//
-//        int currentPlayerNumber = game.getCurrentPlayer();
-//
-//        Player player = game.getPlayerList().stream()
-//                .filter(p -> p.getId().equals(moveRequest.getPlayerId()))
-//                .findFirst()
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid player ID"));
-//
-//        if (game.getCurrentPlayer() == player.getPlayerNumber()) {
-//
-//            gameService.nextPlayer();
-//            return createGameStateResponse(player.getPlayerNumber());
-//        }
-//
-//        throw new IllegalStateException("Not the current player's turn");
-//
-//    }
+
+    @MessageMapping("/game.makeMove")
+    @SendTo("/topic/game")
+    public Map<String, Object> makeMove(@Payload MoveRequest moveRequest) {
+        Game game = gameService.getGame();
+        System.out.println("JSON makeMove     -=-=-=-  " + moveRequest);
+
+        int currentPlayerNumber = game.getCurrentPlayer();
+
+
+        Player player = game.getPlayerList().stream()
+                .filter(p -> p.getPlayerNumber() == (moveRequest.getPlayerNumber()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid player ID"));
+
+        if (game.getCurrentPlayer() == player.getPlayerNumber()) {
+            gameService.processMove(game, player, moveRequest.getMoveType());
+            gameService.nextPlayer();
+            return createGameMoveResponse();
+        }
+        throw new IllegalStateException("Not the current player's turn");
+    }
 
     //TODO^
     //        makeMove - operations
@@ -95,14 +94,22 @@ public class GameController {
         Game game = gameService.getGame();
 
         Map<String, Object> gameState = new HashMap<>();
-//        gameState.put("playerList", game.getPlayerList());
         gameState.put("gameStarted", game.isGameStarted());
-        gameState.put("communityCards", game.getCommunityCards());
-        gameState.put("currentBet", game.getCurrentBet());
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
 
+
+        return gameState;
+    }
+
+    private Map<String, Object> createGameMoveResponse() {
+        Game game = gameService.getGame();
+
+        Map<String, Object> gameState = new HashMap<>();
+        gameState.put("communityCards", game.getCommunityCards());
+        gameState.put("currentBet", game.getCurrentBet());
+        gameState.put("currentPlayer", game.getCurrentPlayer());
 
         return gameState;
     }
