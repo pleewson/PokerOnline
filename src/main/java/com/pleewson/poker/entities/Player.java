@@ -40,5 +40,9 @@ public class Player {
     @Transient
     private boolean isActive = true;
 
+    @Transient
+    private int playerNumber;
+
+
 
 }
