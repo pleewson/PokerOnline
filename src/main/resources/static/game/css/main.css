@@ -1,18 +1,18 @@
-#player1{
+#player1 {
     float: left;
     width: 45%;
 }
 
-#player2{
+#player2 {
     float: right;
     width: 45%;
 }
 
-.hidden{
+.hidden {
     display: none;
 }
 
-.player-box{
+.player-box {
     margin: 10px;
     padding: 10px;
 }
@@ -23,4 +23,9 @@
 
 .move_button {
     margin-right: 5px;
+}
+
+.cards img {
+    max-width: 100px;
+    height: auto;
 }

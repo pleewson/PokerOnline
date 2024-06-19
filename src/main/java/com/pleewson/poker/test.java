@@ -1,5 +1,6 @@
 package com.pleewson.poker;
 
+import com.pleewson.poker.model.Card;
 import com.pleewson.poker.model.Deck;
 
 import java.util.ArrayList;
@@ -9,13 +10,8 @@ public class test {
     public static void main(String[] args) {
 
         Deck deck = new Deck();
-        deck.setCards(deck.initializeDeck());
-
-        System.out.println(deck);
-
-        List<Integer> integerList = new ArrayList<>();
-        integerList.add(1);
-        integerList.add(1);
-        System.out.println(integerList.size());
+        for(Card card : deck.getCards()){
+            System.out.println(card);
+        }
     }
 }
