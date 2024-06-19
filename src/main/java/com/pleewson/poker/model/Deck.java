@@ -1,11 +1,10 @@
 package com.pleewson.poker.model;
 
-import com.pleewson.poker.enums.Rank;
-import com.pleewson.poker.enums.Suit;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Setter
@@ -15,27 +14,43 @@ public class Deck {
     private List<Card> cards;
 
     public Deck() {
+        String[] suits = {"H", "D", "C", "S"};
+        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+
         this.cards = new ArrayList<>();
+        cards = initializeDeck(suits, ranks);
     }
 
-    public void shuffleDeck() {
-        clearDeck();
-        initializeDeck();
-    }
 
-//    public void drawCards(){} game
-//    public void drawCards(){} player
-
-    public List<Card> initializeDeck() {
+    public List<Card> initializeDeck(String[] suits, String[] ranks) {
         List<Card> cards = new ArrayList<>();
-        for (Suit suit : Suit.values()) {
-            for (Rank rank : Rank.values()) {
-                Card card = new Card(suit, rank);
-                cards.add(card);
+
+        for (String suit : suits) {
+            for (String rank : ranks) {
+                cards.add(new Card(suit, rank));
             }
         }
         return cards;
     }
+
+
+    public void shuffleDeck() {
+        Collections.shuffle(cards);
+    }
+
+
+    public Card drawCard() {
+        return cards.remove(cards.size() - 1);
+    }
+
+    public List<Card> drawCards(int numberOfCards) {
+        List<Card> drawnCards = new ArrayList<>();
+        for (int i = 0; i < numberOfCards; i++) {
+            drawnCards.add(drawCard());
+        }
+        return drawnCards;
+    }
+
 
     private void clearDeck() {
         cards.removeAll(cards);
@@ -43,7 +58,8 @@ public class Deck {
 
 
 //    private void clearAllPlayerHands() {
-//    }
+//    public void drawCards(){} game
+//    public void drawCards(){} player
 
 
 }

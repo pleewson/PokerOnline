@@ -19,6 +19,11 @@
 <div id="gameView" class="game-view hidden">
     <div id="player1" class="player-box">
         <h2>Player 1</h2>
+
+        <div id="player1Cards" class="cards">
+            <img id="player1Card1" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+            <img id="player1Card2" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+        </div>
         <form id="makeMoveFormPlayer1" class="makeMoveForm">
             <button type="submit" class="move_button" value="check">Raise</button>
             <button type="submit" class="move_button" value="bet">Bet</button>
@@ -28,12 +33,32 @@
 
     <div id="player2" class="player-box">
         <h2>Player 2</h2>
+
+        <div id="player2Cards" class="cards">
+            <img id="player2Card1" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+            <img id="player2Card2" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+        </div>
+
         <form id="makeMoveFormPlayer2" class="makeMoveForm">
             <button type="submit" class="move_button" value="check">Raise</button>
             <button type="submit" class="move_button" value="bet">Bet</button>
             <button type="submit" class="move_button" value="fold">Fold</button>
         </form>
     </div>
+
+    <br>
+    <br>
+    <br>
+
+    <div id="communityCards" class="cards">
+        <h2>Community Cards</h2>
+        <img id="communityCard1" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+        <img id="communityCard2" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+        <img id="communityCard3" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+        <img id="communityCard4" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+        <img id="communityCard5" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
+    </div>
+
 </div>
 
 
