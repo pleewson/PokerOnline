@@ -62,6 +62,10 @@ function onMessageReceived(payload) {
             gameView.classList.remove('hidden');
         }
 
+        if (message.currentBet !== undefined) {
+            bankDisplay.textContent = message.currentBet;
+        }
+
         console.log("server message", message);
 
         updateUI();
@@ -74,17 +78,17 @@ function makeMove(event) {
     let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse point
     console.log(moveType + " test");
 
-    // let playerNumber = parseInt(sessionStorage.getItem('playerNumber'),10);
+    let playerNumber = parseInt(sessionStorage.getItem('playerNumber'), 10);
 
-    // if (moveType && stompClient && currentPlayer === playerNumber) {
-    //
-    //     let moveRequest = {
-    //         playerId: playerId,
-    //         moveType: moveType
-    //     };
-    //
-    //     stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveRequest));
-    // }
+    if (moveType && stompClient && currentPlayer === playerNumber) {
+
+        let moveRequest = {
+            playerNumber: playerNumber,
+            moveType: moveType
+        };
+
+        stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveRequest));
+    }
 }
 
 
@@ -105,6 +109,8 @@ function updateUI() {
         makeMoveFormPlayer2.classList.add("hidden");
     }
 }
+
+//function updatePlayerCards
 
 
 window.addEventListener("beforeunload", () => {
