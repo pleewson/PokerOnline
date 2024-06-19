@@ -110,6 +110,8 @@ function updateUI() {
     }
 }
 
+//function updatePlayerCards
+
 
 window.addEventListener("beforeunload", () => {
     if (stompClient) {

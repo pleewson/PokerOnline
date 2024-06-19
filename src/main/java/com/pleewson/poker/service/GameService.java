@@ -1,10 +1,12 @@
 package com.pleewson.poker.service;
 
 import com.pleewson.poker.entities.Player;
+import com.pleewson.poker.model.Deck;
 import com.pleewson.poker.model.Game;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Getter
@@ -13,9 +15,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class GameService {
     private Game game;
+    private Deck deck;
+
+    @Autowired
+    public GameService(Game game, Deck deck) {
+        this.game = game;
+        this.deck = deck;
+    }
 
     public Game createNewGame() {
         game = new Game();
+        deck = new Deck();
         return game;
     }
 

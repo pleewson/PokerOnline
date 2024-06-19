@@ -1,7 +1,9 @@
 package com.pleewson.poker.model;
 
+import com.pleewson.poker.entities.Player;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +11,7 @@ import java.util.List;
 
 @Setter
 @Getter
+@Component
 public class Deck {
 
     private List<Card> cards;
@@ -19,6 +22,7 @@ public class Deck {
 
         this.cards = new ArrayList<>();
         cards = initializeDeck(suits, ranks);
+        //shuffle deck TODO
     }
 
 
@@ -49,6 +53,10 @@ public class Deck {
             drawnCards.add(drawCard());
         }
         return drawnCards;
+    }
+
+    public void dealInitialCards(Player player) {
+        player.setCards(drawCards(2));
     }
 
 

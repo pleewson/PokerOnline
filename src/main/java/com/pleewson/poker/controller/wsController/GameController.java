@@ -50,6 +50,8 @@ public class GameController {
         }
 
         gameService.addPlayer(player);
+        gameService.getDeck().dealInitialCards(player);
+        log.info("NEW PLAYER CARDS ->->-> " + player.getCards().toString()); //work
 
         if (gameService.getGame().getPlayerList().size() == 2) {
             gameService.startGame();
@@ -69,9 +71,6 @@ public class GameController {
     public Map<String, Object> makeMove(@Payload MoveRequest moveRequest) {
         Game game = gameService.getGame();
         System.out.println("JSON makeMove     -=-=-=-  " + moveRequest);
-
-        int currentPlayerNumber = game.getCurrentPlayer();
-
 
         Player player = game.getPlayerList().stream()
                 .filter(p -> p.getPlayerNumber() == (moveRequest.getPlayerNumber()))
@@ -98,6 +97,7 @@ public class GameController {
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
+        //put player cards to view TODO
 
 
         return gameState;
