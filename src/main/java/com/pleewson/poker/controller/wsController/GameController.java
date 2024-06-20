@@ -42,7 +42,7 @@ public class GameController {
 
         String playerIdStr = playerId.replace("\"", "");
         Player player = playerRepository.findById(Long.parseLong(playerIdStr)).orElseThrow(() -> new EntityNotFoundException());
-
+        player.setCoins(500);
         headerAccessor.getSessionAttributes().put("playerId", player.getId());
 
         //create game
@@ -106,7 +106,7 @@ public class GameController {
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
-
+//TODO player.Coins -> front
         return gameState;
     }
 

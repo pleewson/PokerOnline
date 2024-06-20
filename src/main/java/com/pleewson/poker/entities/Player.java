@@ -17,6 +17,7 @@ public class Player {
     public Player() {
         this.cards = new ArrayList<>();
         this.isActive = true;
+        this.currentBet = 0;
     }
 
     @Id
@@ -28,11 +29,16 @@ public class Player {
     @Email
     private String email;
     private String password;
-    private double coins = 0;
     private int trophies = 0;
 
     @OneToOne(mappedBy = "player")
     private PlayerDetails playerDetails;
+
+    @Transient
+    private double coins;
+
+    @Transient
+    private double currentBet;
 
     @Transient
     private List<Card> cards;
@@ -43,6 +49,7 @@ public class Player {
     @Transient
     private int playerNumber;
 
-
+    @Transient
+    private int gameCoins;
 
 }
