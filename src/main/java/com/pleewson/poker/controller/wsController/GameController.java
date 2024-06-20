@@ -91,14 +91,17 @@ public class GameController {
 
     private Map<String, Object> createGameStateResponse(int playerNumber) {
         Game game = gameService.getGame();
+        Player player = game.getPlayerList().stream()
+                .filter(p -> p.getPlayerNumber() == playerNumber)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid player nubmer"));
 
         Map<String, Object> gameState = new HashMap<>();
         gameState.put("gameStarted", game.isGameStarted());
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
-        //put player cards to view TODO
-
+        gameState.put("playerCards", player.getCards());
 
         return gameState;
     }

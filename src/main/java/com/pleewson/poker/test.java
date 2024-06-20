@@ -11,7 +11,7 @@ public class test {
 
         Deck deck = new Deck();
         for(Card card : deck.getCards()){
-            System.out.println(card);
+            System.out.println(card.getRank());
         }
     }
 }
