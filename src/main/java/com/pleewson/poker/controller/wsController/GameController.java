@@ -99,7 +99,7 @@ public class GameController {
             List<String> cards = player.getCards().stream()
                     .map(card -> card.getRank() + "-" + card.getSuit())
                     .collect(Collectors.toList());
-            gameState.put("player"+player.getPlayerNumber()+"Cards", cards);
+            gameState.put("player" + player.getPlayerNumber() + "Cards", cards);
         }
 
         gameState.put("gameStarted", game.isGameStarted());
