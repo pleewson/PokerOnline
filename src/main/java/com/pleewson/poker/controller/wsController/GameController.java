@@ -14,7 +14,9 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -91,17 +93,19 @@ public class GameController {
 
     private Map<String, Object> createGameStateResponse(int playerNumber) {
         Game game = gameService.getGame();
-        Player player = game.getPlayerList().stream()
-                .filter(p -> p.getPlayerNumber() == playerNumber)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid player nubmer"));
-
         Map<String, Object> gameState = new HashMap<>();
+
+        for (Player player : game.getPlayerList()) {
+            List<String> cards = player.getCards().stream()
+                    .map(card -> card.getRank() + "-" + card.getSuit())
+                    .collect(Collectors.toList());
+            gameState.put("player"+player.getPlayerNumber()+"Cards", cards);
+        }
+
         gameState.put("gameStarted", game.isGameStarted());
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
-        gameState.put("playerCards", player.getCards());
 
         return gameState;
     }
