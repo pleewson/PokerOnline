@@ -72,6 +72,7 @@ public class GameService {
             case "bet": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
                 game.setCurrentBet((game.getCurrentBet()) + 20); //TEST VALUE
+                player.setCoins(player.getCoins() - 20);
                 break;
             }
             case "check": {
@@ -80,6 +81,12 @@ public class GameService {
                 break;
             }
             case "fold": {
+                //player surrender
+                //send tableBet to winner
+                //set player.currentBet = 0
+                //set tableBet = 0;
+                //next round, next player Starts round
+
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
                 game.setCurrentBet((game.getCurrentBet()) - 20); //TEST VALUE
                 break;
@@ -88,6 +95,13 @@ public class GameService {
                 throw new IllegalArgumentException("Invalid move type");
         }
     }
+
+
+    public Player determineWinner(Game game){
+        return null;
+    }
+    //TODO^
+
 
     //public void raiseBet(Player player, int amount){}
     //sprawdz czy gracz ma wystarczajaca ilosc zetonow aby podniesc zaklad,
