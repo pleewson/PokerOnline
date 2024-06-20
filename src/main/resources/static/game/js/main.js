@@ -66,6 +66,32 @@ function onMessageReceived(payload) {
             bankDisplay.textContent = message.currentBet;
         }
 
+
+//CARDS VIEW
+        if (message.player1Cards !== undefined || message.player2Cards !== undefined) {
+            let playerNumber = parseInt(sessionStorage.getItem('playerNumber'), 10);
+            let playerCards;
+
+            if (playerNumber === 1) {
+                playerCards = message.player1Cards;
+            }
+
+            if (playerNumber === 2) {
+                playerCards = message.player2Cards;
+            }
+
+            let card1 = playerCards[0];
+            let card2 = playerCards[1];
+
+            let card1Image = "/images/cards/" + card1 + ".png";
+            let card2Image = "/images/cards/" + card2 + ".png";
+
+            console.log("-- CARD LOG-- playernumber " + playerNumber + " card1img -> " + card1Image + " card2img -> " + card2Image)
+
+            document.getElementById("player" + playerNumber + "Card1").setAttribute("src", card1Image);
+            document.getElementById("player" + playerNumber + "Card2").setAttribute("src", card2Image);
+        }
+
         console.log("server message", message);
 
         updateUI();
@@ -131,6 +157,3 @@ function onDisconnected() {
 playerJoinForm.addEventListener('submit', connect, true);
 makeMoveFormPlayer1.addEventListener('submit', makeMove, true);
 makeMoveFormPlayer2.addEventListener('submit', makeMove, true);
-
-
-//TODO serve logic in controller
