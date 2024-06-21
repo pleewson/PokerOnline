@@ -106,11 +106,17 @@ function makeMove(event) {
 
     let playerNumber = parseInt(sessionStorage.getItem('playerNumber'), 10);
 
+    let betAmount = null;
+    if (moveType === "bet") {
+        betAmount = parseInt(document.getElementById("betAmountPlayer" + playerNumber).value, 10);
+    }
+
     if (moveType && stompClient && currentPlayer === playerNumber) {
 
         let moveRequest = {
             playerNumber: playerNumber,
-            moveType: moveType
+            moveType: moveType,
+            betAmount: betAmount
         };
 
         stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveRequest));

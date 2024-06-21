@@ -67,12 +67,18 @@ public class GameService {
     }
 
 
-    public void processMove(Game game, Player player, String moveType) {
+    public void processMove(Game game, Player player, MoveRequest moveRequest) {
+        String moveType = moveRequest.getMoveType();
+        Integer betAmount = moveRequest.getBetAmount();
+
         switch (moveType) {
             case "bet": {
-                log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
-                game.setCurrentBet((game.getCurrentBet()) + 20); //TEST VALUE
-                player.setCoins(player.getCoins() - 20);
+                log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType, betAmount);
+                //player
+                game.setCurrentBet((game.getCurrentBet()) + betAmount); //TEST VALUE
+                player.setCoins(player.getCoins() - betAmount);
+                log.info("player money after bet: " + player.getCoins());
+
                 break;
             }
             case "check": {
@@ -97,7 +103,7 @@ public class GameService {
     }
 
 
-    public Player determineWinner(Game game){
+    public Player determineWinner(Game game) {
         return null;
     }
     //TODO^

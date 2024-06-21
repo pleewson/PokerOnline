@@ -25,7 +25,8 @@
             <img id="player1Card2" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
         </div>
         <form id="makeMoveFormPlayer1" class="makeMoveForm">
-            <button type="submit" class="move_button" value="check">Raise</button>
+            <input type="number" id="betAmountPlayer1" name="betAmount" placeholder="Enter bet amount">
+            <button type="submit" class="move_button" value="check">Check</button>
             <button type="submit" class="move_button" value="bet">Bet</button>
             <button type="submit" class="move_button" value="fold">Fold</button>
         </form>
@@ -40,7 +41,8 @@
         </div>
 
         <form id="makeMoveFormPlayer2" class="makeMoveForm">
-            <button type="submit" class="move_button" value="check">Raise</button>
+            <input type="number" id="betAmountPlayer2" name="betAmount" placeholder="Enter bet amount">
+            <button type="submit" class="move_button" value="check">Check</button>
             <button type="submit" class="move_button" value="bet">Bet</button>
             <button type="submit" class="move_button" value="fold">Fold</button>
         </form>

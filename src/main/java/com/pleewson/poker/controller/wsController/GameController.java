@@ -80,7 +80,7 @@ public class GameController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid player ID"));
 
         if (game.getCurrentPlayer() == player.getPlayerNumber()) {
-            gameService.processMove(game, player, moveRequest.getMoveType());
+            gameService.processMove(game, player, moveRequest);
             gameService.nextPlayer();
             return createGameMoveResponse();
         }
