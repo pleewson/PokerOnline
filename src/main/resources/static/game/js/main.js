@@ -6,6 +6,8 @@ let makeMoveFormPlayer2 = document.querySelector("#makeMoveFormPlayer2");
 let infoJoin = document.querySelector("#info");
 let gameView = document.querySelector("#gameView");
 let bankDisplay = document.querySelector("#bank")
+let player1CurrentBet = document.querySelector("#player1CurrentBet");
+let player2CurrentBet = document.querySelector("#player2CurrentBet");
 
 let playerId = null;
 let stompClient = null;
