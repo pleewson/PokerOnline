@@ -6,6 +6,8 @@ let makeMoveFormPlayer2 = document.querySelector("#makeMoveFormPlayer2");
 let infoJoin = document.querySelector("#info");
 let gameView = document.querySelector("#gameView");
 let bankDisplay = document.querySelector("#bank")
+let player1CurrentBet = document.querySelector("#player1CurrentBet");
+let player2CurrentBet = document.querySelector("#player2CurrentBet");
 
 let playerId = null;
 let stompClient = null;
@@ -106,11 +108,17 @@ function makeMove(event) {
 
     let playerNumber = parseInt(sessionStorage.getItem('playerNumber'), 10);
 
+    let betAmount = null;
+    if (moveType === "bet") {
+        betAmount = parseInt(document.getElementById("betAmountPlayer" + playerNumber).value, 10);
+    }
+
     if (moveType && stompClient && currentPlayer === playerNumber) {
 
         let moveRequest = {
             playerNumber: playerNumber,
-            moveType: moveType
+            moveType: moveType,
+            betAmount: betAmount
         };
 
         stompClient.send("/websocket/game.makeMove", {}, JSON.stringify(moveRequest));
