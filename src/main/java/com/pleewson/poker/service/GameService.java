@@ -70,36 +70,58 @@ public class GameService {
     public void processMove(Game game, Player player, MoveRequest moveRequest) {
         String moveType = moveRequest.getMoveType();
         Integer betAmount = moveRequest.getBetAmount();
+        Player opponent = game.getPlayerList().stream()
+                .filter(p -> p.getPlayerNumber() != player.getPlayerNumber())
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No opponent found"));
 
         switch (moveType) {
             case "bet": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType, betAmount);
-                //player
-                game.setCurrentBet((game.getCurrentBet()) + betAmount); //TEST VALUE
-                player.setCoins(player.getCoins() - betAmount);
-                log.info("player money after bet: " + player.getCoins());
+
+                if (betAmount >= player.getCoins()) {
+                    log.info("Player " + player.getPlayerNumber() + " has not enough coins to place bet");
+                    break;
+                }
+                if (betAmount < 20) {
+                    log.info("Can't place bet, minimum amount is 20");
+                    break;
+                }
+                if ((player.getCurrentBet() + betAmount) >= opponent.getCurrentBet()) {
+                    game.setCurrentBet(game.getCurrentBet() + betAmount);
+                    player.setCurrentBet(player.getCurrentBet() + betAmount);
+                    player.setCoins(player.getCoins() - betAmount);
+                    nextPlayer();
+                } else {
+                    log.info("Bet must be at least equal opponent bet");
+                }
+                log.info("player " + player.getPlayerNumber() + " money after bet: " + player.getCoins());
 
                 break;
             }
             case "check": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
-                game.setCurrentBet((game.getCurrentBet()) + 1);  //TEST VALUE
+                //TODO equalize player bet to opponent
+                player.setCheck(true);
+                //TODO check if round/game is end
+
                 break;
             }
             case "fold": {
-                //player surrender
-                //send tableBet to winner
-                //set player.currentBet = 0
-                //set tableBet = 0;
-                //next round, next player Starts round
-
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
-                game.setCurrentBet((game.getCurrentBet()) - 20); //TEST VALUE
+                opponent.setCoins(opponent.getCoins() + game.getCurrentBet());
+                opponent.setCurrentBet(0);
+                game.setCurrentBet(0);
+                player.setCurrentBet(0);
+                nextPlayer();
+                log.info("FOLDED player" + player.getPlayerNumber() + " current coins: " + player.getCoins() + "  opponent coins: " + opponent.getCoins());
+
                 break;
             }
             default:
                 throw new IllegalArgumentException("Invalid move type");
         }
+
     }
 
 

@@ -38,7 +38,7 @@ public class Player {
     private double coins;
 
     @Transient
-    private double currentBet;
+    private Integer currentBet;
 
     @Transient
     private List<Card> cards;
@@ -51,5 +51,8 @@ public class Player {
 
     @Transient
     private int gameCoins;
+
+    @Transient
+    private boolean check;
 
 }

@@ -81,14 +81,11 @@ public class GameController {
 
         if (game.getCurrentPlayer() == player.getPlayerNumber()) {
             gameService.processMove(game, player, moveRequest);
-            gameService.nextPlayer();
+//            gameService.nextPlayer(); //TODO move it into moveRequest if all conditions are correct
             return createGameMoveResponse();
         }
         throw new IllegalStateException("Not the current player's turn");
     }
-
-    //TODO^
-    //        makeMove - operations
 
 
     private Map<String, Object> createGameStateResponse(int playerNumber) {
