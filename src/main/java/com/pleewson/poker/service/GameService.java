@@ -87,10 +87,17 @@ public class GameService {
                     log.info("Can't place bet, minimum amount is 20");
                     break;
                 }
+
+                if (player.getCurrentBet() + betAmount == opponent.getCurrentBet()) {
+                    player.setCheck(true);
+                    checkIf2PlayersChecked(player, opponent);
+                }
+
                 if ((player.getCurrentBet() + betAmount) >= opponent.getCurrentBet()) {
                     game.setCurrentBet(game.getCurrentBet() + betAmount);
                     player.setCurrentBet(player.getCurrentBet() + betAmount);
                     player.setCoins(player.getCoins() - betAmount);
+                    player.setCheck(false);
                     nextPlayer();
                 } else {
                     log.info("Bet must be at least equal opponent bet");
@@ -101,10 +108,28 @@ public class GameService {
             }
             case "check": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
-                //TODO equalize player bet to opponent
-                player.setCheck(true);
-                //TODO check if round/game is end
 
+
+                if ((player.getCoins() + player.getCurrentBet()) < opponent.getCurrentBet()) {
+                    int maxBet = player.getCoins() + player.getCurrentBet();
+                    int difference = opponent.getCurrentBet() - maxBet;
+                    player.setCurrentBet(maxBet); //MAX
+                    opponent.setCoins(opponent.getCoins() + difference);
+                    opponent.setCurrentBet(opponent.getCurrentBet() - difference);
+                    game.setCurrentBet(player.getCoins() + game.getCurrentBet() - difference);
+                    player.setCoins(0);
+
+                    //-ALLIN- CHECK WINNER GAME TODO
+
+                } else {
+                    int difference = opponent.getCurrentBet() - player.getCurrentBet();
+                    player.setCoins(player.getCoins() - difference);
+                    game.setCurrentBet(game.getCurrentBet() + difference);
+                    player.setCurrentBet(opponent.getCurrentBet());
+                }
+
+                player.setCheck(true);
+                checkIf2PlayersChecked(player, opponent);
                 break;
             }
             case "fold": {
@@ -113,6 +138,8 @@ public class GameService {
                 opponent.setCurrentBet(0);
                 game.setCurrentBet(0);
                 player.setCurrentBet(0);
+                player.setCheck(false);
+                opponent.setCheck(false);
                 nextPlayer();
                 log.info("FOLDED player" + player.getPlayerNumber() + " current coins: " + player.getCoins() + "  opponent coins: " + opponent.getCoins());
 
@@ -122,6 +149,15 @@ public class GameService {
                 throw new IllegalArgumentException("Invalid move type");
         }
 
+    }
+
+    public void checkIf2PlayersChecked(Player player, Player opponent) {
+        if (player.isCheck() && opponent.isCheck()) {
+            //nextRound
+        } else {
+            nextPlayer();
+            log.info("CHECK -> playerCoins: {}, playerCurrentBet: {},  --- opponent.Coins: {}, opponentCurrentBet {}", player.getCoins(), player.getCurrentBet(), opponent.getCoins(), opponent.getCurrentBet());
+        }
     }
 
 

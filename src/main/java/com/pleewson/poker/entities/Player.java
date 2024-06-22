@@ -35,7 +35,7 @@ public class Player {
     private PlayerDetails playerDetails;
 
     @Transient
-    private double coins;
+    private Integer coins;
 
     @Transient
     private Integer currentBet;
