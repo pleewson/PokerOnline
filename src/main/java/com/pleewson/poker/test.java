@@ -13,5 +13,8 @@ public class test {
         for (Card card : deck.getCards()) {
             System.out.println(card.getSuit() + "-" + card.getRank());
         }
+
+        List<Integer> integerList = new ArrayList<>();
+        System.out.println(integerList.size());
     }
 }

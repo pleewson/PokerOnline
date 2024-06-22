@@ -108,13 +108,15 @@ public class GameController {
 
     private Map<String, Object> createGameMoveResponse() {
         Game game = gameService.getGame();
+        gameService.getDeck().dealCommunityCards(game); //HEREEEE!
 
         Map<String, Object> gameState = new HashMap<>();
         gameState.put("communityCards", game.getCommunityCards());
+        gameState.put("numCommunityCards", game.getCommunityCards().size());
         gameState.put("currentBet", game.getCurrentBet());
         gameState.put("currentPlayer", game.getCurrentPlayer());
 
-        List<Map<String,Object>> playersStats = game.getPlayerList().stream()
+        List<Map<String, Object>> playersStats = game.getPlayerList().stream()
                 .map(player -> {
                     Map<String, Object> playerData = new HashMap<>();
                     playerData.put("playerNumber", player.getPlayerNumber());
@@ -124,7 +126,7 @@ public class GameController {
                 }).collect(Collectors.toList());
 
         gameState.put("playersStats", playersStats);
-        log.info("Game State: {}" , gameState);
+        log.info("Game State: {}", gameState);
 
         return gameState;
     }

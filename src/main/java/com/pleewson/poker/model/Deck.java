@@ -59,6 +59,25 @@ public class Deck {
         player.setCards(drawCards(2));
     }
 
+    public void dealCommunityCards(Game game) {
+        switch (game.getRound()) {
+            case 1: //skip
+                game.setCommunityCards(null);
+                break;
+            case 2:
+                game.setCommunityCards(drawCards(3));
+                break;
+            case 3:
+            case 4:
+                List<Card> communityCards = game.getCommunityCards();
+                communityCards.add(drawCard());
+                game.setCommunityCards(communityCards);
+                break;
+            default:
+                throw new IllegalStateException("Invalid round number");
+        }
+    }
+
 
     private void clearDeck() {
         cards.removeAll(cards);

@@ -153,13 +153,21 @@ public class GameService {
 
     public void checkIf2PlayersChecked(Player player, Player opponent) {
         if (player.isCheck() && opponent.isCheck()) {
-            //nextRound
+            nextRound();
         } else {
             nextPlayer();
             log.info("CHECK -> playerCoins: {}, playerCurrentBet: {},  --- opponent.Coins: {}, opponentCurrentBet {}", player.getCoins(), player.getCurrentBet(), opponent.getCoins(), opponent.getCurrentBet());
         }
+        //TODO after operation both players set check false
     }
 
+    public void nextRound() {
+        //TODO set CurrentBet - player, table to 0
+        game.setRound(game.getRound() + 1);
+        if(game.getRound() == 5){
+            game.setRound(1);
+        }
+    }
 
     public Player determineWinner(Game game) {
         return null;
