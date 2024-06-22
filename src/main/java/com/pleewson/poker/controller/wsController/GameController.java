@@ -103,7 +103,6 @@ public class GameController {
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
-//TODO player.Coins -> front
         return gameState;
     }
 
@@ -114,6 +113,18 @@ public class GameController {
         gameState.put("communityCards", game.getCommunityCards());
         gameState.put("currentBet", game.getCurrentBet());
         gameState.put("currentPlayer", game.getCurrentPlayer());
+
+        List<Map<String,Object>> playersStats = game.getPlayerList().stream()
+                .map(player -> {
+                    Map<String, Object> playerData = new HashMap<>();
+                    playerData.put("playerNumber", player.getPlayerNumber());
+                    playerData.put("coins", player.getCoins());
+                    playerData.put("currentBet", player.getCurrentBet());
+                    return playerData;
+                }).collect(Collectors.toList());
+
+        gameState.put("playersStats", playersStats);
+        log.info("Game State: {}" , gameState);
 
         return gameState;
     }

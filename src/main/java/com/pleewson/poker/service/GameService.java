@@ -79,7 +79,7 @@ public class GameService {
             case "bet": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType, betAmount);
 
-                if (betAmount >= player.getCoins()) {
+                if (betAmount > player.getCoins()) {
                     log.info("Player " + player.getPlayerNumber() + " has not enough coins to place bet");
                     break;
                 }

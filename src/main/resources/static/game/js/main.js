@@ -5,7 +5,9 @@ let makeMoveFormPlayer1 = document.querySelector("#makeMoveFormPlayer1");
 let makeMoveFormPlayer2 = document.querySelector("#makeMoveFormPlayer2");
 let infoJoin = document.querySelector("#info");
 let gameView = document.querySelector("#gameView");
-let bankDisplay = document.querySelector("#bank")
+let bankDisplay = document.querySelector("#bank");
+let player1Coins = document.querySelector("#player1Coins");
+let player2Coins = document.querySelector("#player2Coins");
 let player1CurrentBet = document.querySelector("#player1CurrentBet");
 let player2CurrentBet = document.querySelector("#player2CurrentBet");
 
@@ -94,6 +96,12 @@ function onMessageReceived(payload) {
             document.getElementById("player" + playerNumber + "Card2").setAttribute("src", card2Image);
         }
 
+        //PLAYERS STSATS
+        let playersStats = message.playersStats;
+        playersStats.forEach(player => {
+            updatePlayerStats(player.playerNumber, player.coins, player.currentBet);
+        })
+
         console.log("server message", message);
 
         updateUI();
@@ -145,6 +153,16 @@ function updateUI() {
 }
 
 //function updatePlayerCards
+
+function updatePlayerStats(playerNumber, coins, currentBet) {
+    if (playerNumber === 1) {
+        player1Coins.textContent = coins;
+        player1CurrentBet.textContent = currentBet;
+    } else if (playerNumber === 2) {
+        player2Coins.textContent = coins;
+        player2CurrentBet.textContent = currentBet;
+    }
+}
 
 
 window.addEventListener("beforeunload", () => {
