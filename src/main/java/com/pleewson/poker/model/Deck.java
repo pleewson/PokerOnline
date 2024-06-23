@@ -16,17 +16,17 @@ public class Deck {
 
     private List<Card> cards;
 
-    public Deck() {
-        String[] suits = {"H", "D", "C", "S"};
-        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    private final String[] suits = {"H", "D", "C", "S"};
+    private final String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
+    public Deck() {
         this.cards = new ArrayList<>();
-        cards = initializeDeck(suits, ranks);
+        cards = initializeDeck();
         shuffleDeck();
     }
 
 
-    public List<Card> initializeDeck(String[] suits, String[] ranks) {
+    public List<Card> initializeDeck() {
         List<Card> cards = new ArrayList<>();
         for (String suit : suits) {
             for (String rank : ranks) {
