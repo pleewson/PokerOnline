@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Getter
 @Setter
 @Service
@@ -71,7 +73,7 @@ public class GameService {
 
         switch (moveType) {
             case "bet": {
-                log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType, betAmount);
+                log.info("playerNum {} moveType -> {} betAmount {} ", player.getPlayerNumber(), moveType, betAmount);
 
                 if (betAmount > player.getCoins()) {
                     log.info("Player " + player.getPlayerNumber() + " has not enough coins to place bet");
@@ -82,8 +84,9 @@ public class GameService {
                     break;
                 }
 
-                if (player.getCurrentBet() + betAmount == opponent.getCurrentBet()) {
+                if ((player.getCurrentBet() + betAmount) == opponent.getCurrentBet()) {
                     player.setCoins(player.getCoins() - betAmount);
+                    player.setCurrentBet(player.getCurrentBet() + betAmount);
                     game.setCurrentBet(game.getCurrentBet() + betAmount);
                     player.setCheck(true);
                     checkIf2PlayersChecked(player, opponent);
@@ -107,14 +110,14 @@ public class GameService {
             case "check": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
 
-                if(opponent.getCurrentBet() < 20){
+                if (opponent.getCurrentBet() < 20) {
                     log.info("Can't check. Must place the bet");
                     break;
                 }
 
                 player.setCheck(true);
 
-                if (player.getCurrentBet() == opponent.getCurrentBet()) {
+                if (player.getCurrentBet().equals(opponent.getCurrentBet())) {
                     checkIf2PlayersChecked(player, opponent);
                     log.info("CHECK - 1");
                     break;
@@ -144,6 +147,13 @@ public class GameService {
             }
             case "fold": {
                 log.info("playerNum {} moveType -> {} ", player.getPlayerNumber(), moveType);
+
+                if (player.getCurrentBet() < 20) {
+                    player.setCoins(player.getCoins() - 20);
+                    game.setCurrentBet(game.getCurrentBet() + 20);
+                    log.info("Player -20 coins");
+                }
+
                 opponent.setCoins(opponent.getCoins() + game.getCurrentBet());
                 opponent.setCurrentBet(0);
                 game.setCurrentBet(0);
@@ -152,7 +162,7 @@ public class GameService {
                 opponent.setCheck(false);
                 nextPlayer();
 
-                //TODO enemy win the round, Start new one with new cards
+                startNewRound();
                 log.info("FOLDED player" + player.getPlayerNumber() + " current coins: " + player.getCoins() + "  opponent coins: " + opponent.getCoins());
                 break;
             }
@@ -170,6 +180,19 @@ public class GameService {
         } else {
             nextPlayer();
             log.info("CHECK -> playerCoins: {}, playerCurrentBet: {},  --- opponent.Coins: {}, opponentCurrentBet {}", player.getCoins(), player.getCurrentBet(), opponent.getCoins(), opponent.getCurrentBet());
+        }
+    }
+
+    public void startNewRound() {
+        log.info("Starting a new round");
+
+        game.setRound(1);
+        deck.initializeDeck();
+        deck.shuffleDeck();
+        game.setCommunityCards(new ArrayList<>());
+        for (Player player : game.getPlayerList()) {
+            player.setCards(null);
+            deck.dealInitialCards(player);
         }
     }
 
