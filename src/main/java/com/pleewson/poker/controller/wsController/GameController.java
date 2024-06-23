@@ -132,6 +132,14 @@ public class GameController {
                     return playerData;
                 }).collect(Collectors.toList());
 
+        //player cards - TODO separate this method
+        for (Player player : game.getPlayerList()) {
+            List<String> cards = player.getCards().stream()
+                    .map(card -> card.getRank() + "-" + card.getSuit())
+                    .collect(Collectors.toList());
+            log.info("Players cards: {} ", cards);
+            gameState.put("player" + player.getPlayerNumber() + "Cards", cards);
+        }
         gameState.put("playersStats", playersStats);
         log.info("Game State: {}", gameState);
 
