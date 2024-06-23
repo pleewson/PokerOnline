@@ -22,13 +22,12 @@ public class Deck {
 
         this.cards = new ArrayList<>();
         cards = initializeDeck(suits, ranks);
-        //shuffle deck TODO
+        shuffleDeck();
     }
 
 
     public List<Card> initializeDeck(String[] suits, String[] ranks) {
         List<Card> cards = new ArrayList<>();
-
         for (String suit : suits) {
             for (String rank : ranks) {
                 cards.add(new Card(suit, rank));
@@ -57,6 +56,25 @@ public class Deck {
 
     public void dealInitialCards(Player player) {
         player.setCards(drawCards(2));
+    }
+
+    public void dealCommunityCards(Game game) {
+        switch (game.getRound()) {
+            case 1: //skip
+                game.setCommunityCards(null);
+                break;
+            case 2:
+                game.setCommunityCards(drawCards(3));
+                break;
+            case 3:
+            case 4:
+                List<Card> communityCards = game.getCommunityCards();
+                communityCards.add(drawCard());
+                game.setCommunityCards(communityCards);
+                break;
+            default:
+                throw new IllegalStateException("Invalid round number");
+        }
     }
 
 

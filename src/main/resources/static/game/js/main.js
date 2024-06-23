@@ -5,9 +5,17 @@ let makeMoveFormPlayer1 = document.querySelector("#makeMoveFormPlayer1");
 let makeMoveFormPlayer2 = document.querySelector("#makeMoveFormPlayer2");
 let infoJoin = document.querySelector("#info");
 let gameView = document.querySelector("#gameView");
-let bankDisplay = document.querySelector("#bank")
+let bankDisplay = document.querySelector("#bank");
+let player1Coins = document.querySelector("#player1Coins");
+let player2Coins = document.querySelector("#player2Coins");
 let player1CurrentBet = document.querySelector("#player1CurrentBet");
 let player2CurrentBet = document.querySelector("#player2CurrentBet");
+
+let communityCard1 = document.querySelector("#communityCard1");
+let communityCard2 = document.querySelector("#communityCard2");
+let communityCard3 = document.querySelector("#communityCard3");
+let communityCard4 = document.querySelector("#communityCard4");
+let communityCard5 = document.querySelector("#communityCard5");
 
 let playerId = null;
 let stompClient = null;
@@ -94,6 +102,35 @@ function onMessageReceived(payload) {
             document.getElementById("player" + playerNumber + "Card2").setAttribute("src", card2Image);
         }
 
+        //PLAYERS STSATS
+        let playersStats = message.playersStats;
+        playersStats.forEach(player => {
+            updatePlayerStats(player.playerNumber, player.coins, player.currentBet);
+        })
+
+        //COMMUNITY CARDS
+        let numCommunityCards = message.numCommunityCards;
+        let communityCards = message.communityCards;
+        console.log("numCommunityCards " + numCommunityCards + " communityCards ->>" + communityCards)
+
+        if (numCommunityCards === 0 || numCommunityCards === null) {
+            communityCard1.setAttribute("src", "/images/cards/BACK.png");
+            communityCard2.setAttribute("src", "/images/cards/BACK.png");
+            communityCard3.setAttribute("src", "/images/cards/BACK.png");
+            communityCard4.setAttribute("src", "/images/cards/BACK.png");
+            communityCard5.setAttribute("src", "/images/cards/BACK.png");
+        } else if (numCommunityCards === 3) {
+            communityCard1.setAttribute("src", "/images/cards/" + communityCards[0] + ".png");
+            communityCard2.setAttribute("src", "/images/cards/" + communityCards[1] + ".png");
+            communityCard3.setAttribute("src", "/images/cards/" + communityCards[2] + ".png");
+            communityCard4.setAttribute("src", "/images/cards/BACK.png");
+            communityCard5.setAttribute("src", "/images/cards/BACK.png");
+        } else if (numCommunityCards === 4) {
+            communityCard4.setAttribute("src", "/images/cards/" + communityCards[3] + ".png");
+        } else if (numCommunityCards === 5) {
+            communityCard5.setAttribute("src", "/images/cards/" + communityCards[4] + ".png");
+        }
+
         console.log("server message", message);
 
         updateUI();
@@ -145,6 +182,16 @@ function updateUI() {
 }
 
 //function updatePlayerCards
+
+function updatePlayerStats(playerNumber, coins, currentBet) {
+    if (playerNumber === 1) {
+        player1Coins.textContent = coins;
+        player1CurrentBet.textContent = currentBet;
+    } else if (playerNumber === 2) {
+        player2Coins.textContent = coins;
+        player2CurrentBet.textContent = currentBet;
+    }
+}
 
 
 window.addEventListener("beforeunload", () => {

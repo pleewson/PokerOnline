@@ -18,6 +18,7 @@ public class Game {
     private List<Card> communityCards;
     private int currentBet;
     private int currentPlayer;
+    private int round = 1;
 
     public Game() {
         this.playerList = new ArrayList<>();
@@ -32,17 +33,24 @@ public class Game {
 //    }
 
 
-    public void addPlayer(Player player){
+    public List<Card> getCommunityCards() {
+        if (this.communityCards == null) {
+            this.communityCards = new ArrayList<>();
+        }
+        return this.communityCards;
+    }
+
+    public void addPlayer(Player player) {
         playerList.add(player);
     }
+
     public void startGame() {
         gameStarted = true;
     }
+
     public void stopGame() {
         gameStarted = false;
     }
-
-
 
 
 }
