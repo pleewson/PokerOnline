@@ -1,6 +1,7 @@
 package com.pleewson.poker.controller.wsController;
 
 import com.pleewson.poker.entities.Player;
+import com.pleewson.poker.model.Card;
 import com.pleewson.poker.model.Game;
 import com.pleewson.poker.repository.PlayerRepository;
 import com.pleewson.poker.service.GameService;
@@ -13,6 +14,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +83,6 @@ public class GameController {
 
         if (game.getCurrentPlayer() == player.getPlayerNumber()) {
             gameService.processMove(game, player, moveRequest);
-//            gameService.nextPlayer(); //TODO move it into moveRequest if all conditions are correct
             return createGameMoveResponse();
         }
         throw new IllegalStateException("Not the current player's turn");
@@ -103,17 +104,36 @@ public class GameController {
         gameState.put("currentPlayer", game.getCurrentPlayer());
         gameState.put("nickname", game.getPlayerList().get(game.getPlayerList().size() - 1).getNickname());
         gameState.put("playerNumber", playerNumber);
-//TODO player.Coins -> front
         return gameState;
     }
+
 
     private Map<String, Object> createGameMoveResponse() {
         Game game = gameService.getGame();
 
+        List<String> communityCards = gameService.getGame().getCommunityCards().stream()
+                .map(Card::toString)
+                .collect(Collectors.toList());
+
+        log.info("!@!@!@!@! communityCards ->> " + communityCards);
+
         Map<String, Object> gameState = new HashMap<>();
-        gameState.put("communityCards", game.getCommunityCards());
+        gameState.put("communityCards", communityCards);
+        gameState.put("numCommunityCards", game.getCommunityCards().size());
         gameState.put("currentBet", game.getCurrentBet());
         gameState.put("currentPlayer", game.getCurrentPlayer());
+
+        List<Map<String, Object>> playersStats = game.getPlayerList().stream()
+                .map(player -> {
+                    Map<String, Object> playerData = new HashMap<>();
+                    playerData.put("playerNumber", player.getPlayerNumber());
+                    playerData.put("coins", player.getCoins());
+                    playerData.put("currentBet", player.getCurrentBet());
+                    return playerData;
+                }).collect(Collectors.toList());
+
+        gameState.put("playersStats", playersStats);
+        log.info("Game State: {}", gameState);
 
         return gameState;
     }
