@@ -28,11 +28,6 @@ public class Game {
         this.currentPlayer = 1;
     }
 
-//    public Game(List<Player> playerList) {
-//        this.playerList = playerList;
-//    }
-
-
     public List<Card> getCommunityCards() {
         if (this.communityCards == null) {
             this.communityCards = new ArrayList<>();

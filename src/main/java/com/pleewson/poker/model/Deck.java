@@ -82,10 +82,4 @@ public class Deck {
         cards.removeAll(cards);
     }
 
-
-//    private void clearAllPlayerHands() {
-//    public void drawCards(){} game
-//    public void drawCards(){} player
-
-
 }
