@@ -43,16 +43,82 @@ public class test {
 
 
         //ROYAL_FLUSH
-        List<Card> manualHand_RF = new ArrayList<>();
-        manualHand_RF.add(new Card("C", "A"));
-        manualHand_RF.add(new Card("D", "J"));
-        manualHand_RF.add(new Card("D", "Q"));
-        manualHand_RF.add(new Card("D", "K"));
-        manualHand_RF.add(new Card("C", "K"));
+        List<Card> manualHand_ROYAL_FLUSH = new ArrayList<>();
+        manualHand_ROYAL_FLUSH.add(new Card("C", "A"));
+        manualHand_ROYAL_FLUSH.add(new Card("D", "J"));
+        manualHand_ROYAL_FLUSH.add(new Card("D", "Q"));
+        manualHand_ROYAL_FLUSH.add(new Card("D", "K"));
+        manualHand_ROYAL_FLUSH.add(new Card("C", "K"));
 
-        manualHand_RF.add(new Card("D", "10"));
-        manualHand_RF.add(new Card("D", "A"));
-        System.out.println("is there royal flush? : " + evaluateHand.isRoyalFlush(manualHand_RF));
+        manualHand_ROYAL_FLUSH.add(new Card("D", "10"));
+        manualHand_ROYAL_FLUSH.add(new Card("D", "A"));
+        System.out.println("is there royal flush? : " + evaluateHand.isRoyalFlush(manualHand_ROYAL_FLUSH));
+
+
+        //FOUR OF A KIND
+        List<Card> manualHand_FOUR_OF_A_KIND = new ArrayList<>();
+        manualHand_FOUR_OF_A_KIND.add(new Card("C", "5"));
+        manualHand_FOUR_OF_A_KIND.add(new Card("H", "7"));
+        manualHand_FOUR_OF_A_KIND.add(new Card("H", "7"));
+        manualHand_FOUR_OF_A_KIND.add(new Card("S", "A"));
+        manualHand_FOUR_OF_A_KIND.add(new Card("S", "7"));
+
+        manualHand_FOUR_OF_A_KIND.add(new Card("D", "10"));
+        manualHand_FOUR_OF_A_KIND.add(new Card("D", "7"));
+        System.out.println("is there royal four of a kind? : " + evaluateHand.isFourOfAKind(manualHand_FOUR_OF_A_KIND));
+
+
+        //FULL HOUSE
+        List<Card> manualHand_FULL_HOUSE = new ArrayList<>();
+        manualHand_FULL_HOUSE.add(new Card("C", "5"));
+        manualHand_FULL_HOUSE.add(new Card("H", "7"));
+        manualHand_FULL_HOUSE.add(new Card("S", "9"));
+        manualHand_FULL_HOUSE.add(new Card("S", "5"));
+        manualHand_FULL_HOUSE.add(new Card("S", "A"));
+
+        manualHand_FULL_HOUSE.add(new Card("D", "A"));
+        manualHand_FULL_HOUSE.add(new Card("D", "5"));
+        System.out.println("is there full house? : " + evaluateHand.isFullHouse(manualHand_FULL_HOUSE));
+
+
+        //THREE OF A KIND
+        List<Card> manualHand_THREE_OF_A_KIND = new ArrayList<>();
+        manualHand_THREE_OF_A_KIND.add(new Card("C", "9"));
+        manualHand_THREE_OF_A_KIND.add(new Card("C", "4"));
+        manualHand_THREE_OF_A_KIND.add(new Card("S", "8"));
+        manualHand_THREE_OF_A_KIND.add(new Card("C", "A"));
+        manualHand_THREE_OF_A_KIND.add(new Card("D", "5"));
+
+        manualHand_THREE_OF_A_KIND.add(new Card("S", "9"));
+        manualHand_THREE_OF_A_KIND.add(new Card("S", "9"));
+        System.out.println("is there THREE OF A  KIND? : " + evaluateHand.isThreeOfAKind(manualHand_THREE_OF_A_KIND));
+
+
+        //TWO PAIRS
+        List<Card> manualHand_TWO_PAIR = new ArrayList<>();
+        manualHand_TWO_PAIR.add(new Card("C", "9"));
+        manualHand_TWO_PAIR.add(new Card("C", "5"));
+        manualHand_TWO_PAIR.add(new Card("S", "2"));
+        manualHand_TWO_PAIR.add(new Card("S", "4"));
+        manualHand_TWO_PAIR.add(new Card("D", "9"));
+
+        manualHand_TWO_PAIR.add(new Card("D", "5"));
+        manualHand_TWO_PAIR.add(new Card("S", "Q"));
+        System.out.println("is there TWO PAIR? : " + evaluateHand.isTwoPair(manualHand_TWO_PAIR));
+
+
+        //PAIR
+        List<Card> manualHand_PAIR = new ArrayList<>();
+        manualHand_PAIR.add(new Card("S", "9"));
+        manualHand_PAIR.add(new Card("S", "5"));
+        manualHand_PAIR.add(new Card("S", "10"));
+        manualHand_PAIR.add(new Card("D", "Q"));
+        manualHand_PAIR.add(new Card("D", "A"));
+
+        manualHand_PAIR.add(new Card("H", "K"));
+        manualHand_PAIR.add(new Card("H", "A"));
+        System.out.println("is there PAIR? : " + evaluateHand.isPair(manualHand_PAIR));
+
 
 
 

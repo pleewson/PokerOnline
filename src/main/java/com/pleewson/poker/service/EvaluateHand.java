@@ -1,36 +1,40 @@
 package com.pleewson.poker.service;
 
+import com.pleewson.poker.enums.HandRankEnum;
 import com.pleewson.poker.model.Card;
 
 import java.util.*;
 
 public class EvaluateHand {
 
-    public enum HandRank {
-        HIGH_CARD,
-        PAIR,
-        TWO_PAIR,
-        THREE_OF_A_KIND,
-        STRAIGHT,
-        FLUSH,
-        FULL_HOUSE,
-        FOUR_OF_A_KIND,
-        STRAIGHT_FLUSH,
-        ROYAL_FLUSH
-    }
-
-    public static HandRank evaluateHand(List<Card> hand, List<Card> communityCards) {
+    public static HandRankEnum evaluateHand(List<Card> hand, List<Card> communityCards) {
         List<Card> cards = new ArrayList<>();
         cards.addAll(hand);
         cards.addAll(communityCards);
 
-        boolean flush = isFlush(cards);
-        boolean straight = isStraight(cards);
-//        boolean royalFlush = false;
-
-
-        return HandRank.HIGH_CARD;
+        if (isRoyalFlush(cards)) {
+            return HandRankEnum.ROYAL_FLUSH;
+        } else if (isStraight(cards) && isFlush(cards)) { // TODO - TO FIX
+            return HandRankEnum.STRAIGHT_FLUSH;
+        } else if (isFourOfAKind(cards)) {
+            return HandRankEnum.FOUR_OF_A_KIND;
+        } else if (isFullHouse(cards)) {
+            return HandRankEnum.FULL_HOUSE;
+        } else if (isFlush(cards)) {
+            return HandRankEnum.FLUSH;
+        } else if (isStraight(cards)) {
+            return HandRankEnum.STRAIGHT;
+        } else if (isThreeOfAKind(cards)) {
+            return HandRankEnum.THREE_OF_A_KIND;
+        } else if (isTwoPair(cards)) {
+            return HandRankEnum.TWO_PAIR;
+        } else if (isPair(cards)) {
+            return HandRankEnum.PAIR;
+        } else {
+            return HandRankEnum.HIGH_CARD;
+        }
     }
+
 
     public static boolean isFlush(List<Card> cards) {
         //mapping card colors to number of occurrences
@@ -137,4 +141,87 @@ public class EvaluateHand {
         return false;
     }
 
+
+    public static boolean isFourOfAKind(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+
+        for (int count : rankCount.values()) {
+            if (count == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean isFullHouse(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+
+        boolean hasThreeOfaKind = false;
+        boolean hasPair = false;
+
+        for (int count : rankCount.values()) {
+            if (count == 3) {
+                hasThreeOfaKind = true;
+            } else if (count == 2) {
+                hasPair = true;
+            }
+        }
+
+        return hasThreeOfaKind && hasPair;
+    }
+
+
+    public static boolean isThreeOfAKind(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+
+        for (int count : rankCount.values()) {
+            if (count == 3) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean isTwoPair(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+
+        int pairCount = 0;
+        for (int count : rankCount.values()) {
+            if (count == 2) {
+                pairCount++;
+            }
+        }
+        return pairCount >= 2;
+    }
+
+
+    public static boolean isPair(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+
+        for (int count : rankCount.values()) {
+            if (count == 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
+
