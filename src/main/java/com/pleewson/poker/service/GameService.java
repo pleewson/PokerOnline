@@ -48,12 +48,9 @@ public class GameService {
         game.getPlayerList().removeIf(player -> player.getId().equals(playerId));
     }
 
+
     public void startGame() {
         game.setGameStarted(true);
-    }
-
-    public void stopGame() {
-        game.setGameStarted(false);
     }
 
 
@@ -199,16 +196,39 @@ public class GameService {
     public void nextRound() {
         game.setRound(game.getRound() + 1);
         setPlayersCurrentBet0();
-        deck.dealCommunityCards(game);
         if (game.getRound() == 5) {
+            determineWinner(game);
+            nextPlayer();
             game.setRound(1);
         }
+        deck.dealCommunityCards(game);
     }
 
-    public Player determineWinner(Game game) {
-        return null;
+    public void determineWinner(Game game) {
+        for (Player player : game.getPlayerList()) {
+            player.setHandRank(EvaluateHand.evaluateHand(player.getCards(), game.getCommunityCards()).getRankValue());
+        }
+
+        Player player1 = game.getPlayerList().get(0);
+        Player player2 = game.getPlayerList().get(1);
+
+        if (player1.getHandRank() > player2.getHandRank()) {
+            player1.setCoins(player1.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
+            game.setCurrentBet(0);
+            player1.setCurrentBet(0);
+            log.info("WINNER player {} wins, playerCards {}, communityCards{}, handRank {}", player1.getNickname(), player1.getCards(), game.getCommunityCards(), player1.getHandRank());
+            log.info("LOSER player {} wins, playerCards {}, communityCards{}, handRank {}", player2.getNickname(), player2.getCards(), game.getCommunityCards(), player2.getHandRank());
+        } else if (player1.getHandRank() < player2.getHandRank()) {
+            player2.setCoins(player2.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
+            game.setCurrentBet(0);
+            player2.setCurrentBet(0);
+            log.info("WINNER player {} , playerCards {}, communityCards{}, handRank {}", player2.getNickname(), player2.getCards(), game.getCommunityCards(), player2.getHandRank());
+            log.info("LOSER player {} , playerCards {}, communityCards{}, handRank {}", player1.getNickname(), player1.getCards(), game.getCommunityCards(), player1.getHandRank());
+        } else {
+            log.info("SAME RANK DRAW/CHECK POSSIBILITIES"); //TODO
+        }
+
     }
-    //TODO^
 
     public void setPlayersCurrentBet0() {
         for (Player player : game.getPlayerList()) {
@@ -222,15 +242,4 @@ public class GameService {
         }
     }
 
-    //public void raiseBet(Player player, int amount){}
-    //sprawdz czy gracz ma wystarczajaca ilosc zetonow aby podniesc zaklad,
-    //jesli ma zabierz mu zetony i dodaj do currentBet
-    //jesli nie ma wyswietl komunikat o braku zetonow
-
-    //public void checkBet(Player player(){}
-    //jesli gracz sprawdza zaklad, nic robi nic
-
-//    public void fold(Player player){}
-    //obsluga passowania przez gracza
-    //mozna go zdezaktywowac na dana ture
 }

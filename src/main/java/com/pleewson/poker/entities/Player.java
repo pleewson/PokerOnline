@@ -55,4 +55,7 @@ public class Player {
     @Transient
     private boolean check;
 
+    @Transient
+    private Integer handRank;
+
 }
