@@ -22,13 +22,12 @@ public class Deck {
 
         this.cards = new ArrayList<>();
         cards = initializeDeck(suits, ranks);
-        //shuffle deck TODO
+        shuffleDeck();
     }
 
 
     public List<Card> initializeDeck(String[] suits, String[] ranks) {
         List<Card> cards = new ArrayList<>();
-
         for (String suit : suits) {
             for (String rank : ranks) {
                 cards.add(new Card(suit, rank));

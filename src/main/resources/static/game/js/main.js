@@ -111,6 +111,7 @@ function onMessageReceived(payload) {
         //COMMUNITY CARDS
         let numCommunityCards = message.numCommunityCards;
         let communityCards = message.communityCards;
+        console.log("numCommunityCards " + numCommunityCards + " communityCards ->>" + communityCards)
 
         if (numCommunityCards === 0 || numCommunityCards === null) {
             communityCard1.setAttribute("src", "/images/cards/BACK.png");
