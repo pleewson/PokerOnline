@@ -24,7 +24,7 @@ public class TestController {
         return player.getId().toString() + "   - player session id";
     }
 
-    @RequestMapping("test2")
+    @RequestMapping("game")
     public String test2() {
         return "game";
     }
@@ -36,5 +36,9 @@ public class TestController {
         Player player = playerRepository.findById(11l).
                 orElseThrow(() -> new EntityNotFoundException("entity not found"));
         return "nickname for player with id 11  -> " + player.getNickname();
+    }
+@RequestMapping("/test4")
+    public String test4(){
+        return "home";
     }
 }
