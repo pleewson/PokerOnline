@@ -1,6 +1,7 @@
 package com.pleewson.poker.service;
 
 import com.pleewson.poker.entities.Player;
+import com.pleewson.poker.model.Card;
 import com.pleewson.poker.model.Deck;
 import com.pleewson.poker.model.Game;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -127,9 +130,11 @@ public class GameService {
                     opponent.setCurrentBet(opponent.getCurrentBet() - difference);
                     game.setCurrentBet(player.getCoins() + game.getCurrentBet() - difference);
                     player.setCoins(0);
+                    game.setRound(4); //last one
+                    nextRound();
                     log.info("CHECK - 2");
-
-                    //-ALLIN- CHECK WINNER GAME TODO
+                    //co jak wygra gracz co dal allina
+                    break;
 
                 } else {
                     int difference = opponent.getCurrentBet() - player.getCurrentBet();
@@ -166,7 +171,7 @@ public class GameService {
             default:
                 throw new IllegalArgumentException("Invalid move type");
         }
-
+        checkIfGameIsFinishedAndDetermineWinner();
     }
 
     public void checkIf2PlayersChecked(Player player, Player opponent) {
@@ -213,21 +218,23 @@ public class GameService {
         Player player2 = game.getPlayerList().get(1);
 
         if (player1.getHandRank() > player2.getHandRank()) {
-            player1.setCoins(player1.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
-            game.setCurrentBet(0);
-            player1.setCurrentBet(0);
+            sendCoinsToPlayer1(player1, player2);
             log.info("WINNER player {} wins, playerCards {}, communityCards{}, handRank {}", player1.getNickname(), player1.getCards(), game.getCommunityCards(), player1.getHandRank());
             log.info("LOSER player {} wins, playerCards {}, communityCards{}, handRank {}", player2.getNickname(), player2.getCards(), game.getCommunityCards(), player2.getHandRank());
         } else if (player1.getHandRank() < player2.getHandRank()) {
-            player2.setCoins(player2.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
-            game.setCurrentBet(0);
-            player2.setCurrentBet(0);
+            sendCoinsToPlayer2(player1, player2);
             log.info("WINNER player {} , playerCards {}, communityCards{}, handRank {}", player2.getNickname(), player2.getCards(), game.getCommunityCards(), player2.getHandRank());
             log.info("LOSER player {} , playerCards {}, communityCards{}, handRank {}", player1.getNickname(), player1.getCards(), game.getCommunityCards(), player1.getHandRank());
-        } else {
-            log.info("SAME RANK DRAW/CHECK POSSIBILITIES"); //TODO
+
+
+        } else if (ifDoubleTwoHighCards(player1, player2)) {
+
         }
 
+//        log.info("SAME RANK DRAW/CHECK POSSIBILITIES"); //TODO
+//        player1.setCoins(game.getCurrentBet() / 2); //
+//        player2.setCoins(game.getCurrentBet() / 2); // temporary
+//        game.setCurrentBet(0); //
     }
 
     public void setPlayersCurrentBet0() {
@@ -242,4 +249,81 @@ public class GameService {
         }
     }
 
+    public void checkIfGameIsFinishedAndDetermineWinner() {
+        List<Player> players = game.getPlayerList();
+        Player player1 = players.get(0);
+        Player player2 = players.get(1);
+
+        if (player1.getCoins() < 10 && player1.getCurrentBet() == 0 && game.getCurrentBet() == 0) {
+            player2.setTrophies(player2.getTrophies() + 1);
+            log.info(player2.getNickname() + " won the game, +1 trophy");
+            //TODO redirect players to scoreboard
+        }
+
+        if (player2.getCoins() < 10 && player2.getCurrentBet() == 0 && game.getCurrentBet() == 0) {
+            player1.setTrophies(player1.getTrophies() + 1);
+            log.info(player1.getNickname() + " won the game, +1 trophy");
+            //TODO redirect players to scoreboard
+        }
+    }
+
+
+    private void sendCoinsToPlayer1(Player player1, Player player2) {
+        player1.setCoins(player1.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
+        game.setCurrentBet(0);
+        player1.setCurrentBet(0);
+    }
+
+    private void sendCoinsToPlayer2(Player player1, Player player2) {
+        player2.setCoins(player2.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
+        game.setCurrentBet(0);
+        player2.setCurrentBet(0);
+    }
+
+    private void divideCoinsIfDraw(Player player1, Player player2) {
+        log.info("DRAW - DIVIDED COINS"); //TODO
+        player1.setCoins(player1.getCoins() + game.getCurrentBet() / 2);
+        player2.setCoins(player2.getCoins() + game.getCurrentBet() / 2);
+        game.setCurrentBet(0);
+    }
+
+
+    public boolean ifDoubleTwoHighCards(Player player1, Player player2) {
+        if (player1.getHandRank() == 1 && player2.getHandRank() == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public void checkTheHighestCardRank(Player player1, Player player2) {
+        List<Card> player1Cards = new ArrayList<>(player1.getCards());
+        List<Card> player2Cards = new ArrayList<>(player2.getCards());
+
+        //sort reversed to get the highest card first
+        Collections.sort(player1Cards, Card.RANK_COMPARATOR.reversed());
+        Collections.sort(player2Cards, Card.RANK_COMPARATOR.reversed());
+
+        for (int i = 0; i < player1Cards.size() && i < player1Cards.size(); i++) {
+            int player1CardRank = Card.rankToInt(player1Cards.get(i).getRank());
+            int player2CardRank = Card.rankToInt(player2Cards.get(i).getRank());
+
+            if (player1CardRank > player2CardRank) {
+                sendCoinsToPlayer1(player1, player2);
+                log.info("{} WIN with {}, {} LOSE with {}", player1.getNickname(), player1CardRank, player2.getNickname(), player2CardRank);
+                return;
+            } else if (player1CardRank < player2CardRank) {
+                sendCoinsToPlayer2(player1, player2);
+                log.info("{} WIN with {}, {} LOSE with {}", player2.getNickname(), player2CardRank, player1.getNickname(), player1CardRank);
+                return;
+            } else {
+                divideCoinsIfDraw(player1, player2);
+            }
+
+        }
+
+
+    }
+
 }
+
+

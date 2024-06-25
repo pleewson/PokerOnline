@@ -13,25 +13,25 @@ public class EvaluateHand {
         cards.addAll(communityCards);
 
         if (isRoyalFlush(cards)) {
-            return HandRankEnum.ROYAL_FLUSH;
+            return HandRankEnum.ROYAL_FLUSH; //10
         } else if (isStraight(cards) && isFlush(cards)) { // TODO - TO FIX
-            return HandRankEnum.STRAIGHT_FLUSH;
+            return HandRankEnum.STRAIGHT_FLUSH; //9
         } else if (isFourOfAKind(cards)) {
-            return HandRankEnum.FOUR_OF_A_KIND;
+            return HandRankEnum.FOUR_OF_A_KIND; //8
         } else if (isFullHouse(cards)) {
-            return HandRankEnum.FULL_HOUSE;
+            return HandRankEnum.FULL_HOUSE; //7
         } else if (isFlush(cards)) {
-            return HandRankEnum.FLUSH;
+            return HandRankEnum.FLUSH; //6
         } else if (isStraight(cards)) {
-            return HandRankEnum.STRAIGHT;
+            return HandRankEnum.STRAIGHT; //5
         } else if (isThreeOfAKind(cards)) {
-            return HandRankEnum.THREE_OF_A_KIND;
+            return HandRankEnum.THREE_OF_A_KIND; //4
         } else if (isTwoPair(cards)) {
-            return HandRankEnum.TWO_PAIR;
+            return HandRankEnum.TWO_PAIR; //3
         } else if (isPair(cards)) {
-            return HandRankEnum.PAIR;
+            return HandRankEnum.PAIR; //2
         } else {
-            return HandRankEnum.HIGH_CARD;
+            return HandRankEnum.HIGH_CARD; //1
         }
     }
 
