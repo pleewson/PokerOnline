@@ -4,15 +4,14 @@ import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.model.Card;
 import com.pleewson.poker.model.Deck;
 import com.pleewson.poker.model.Game;
+import com.pleewson.poker.model.PairInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -209,6 +208,7 @@ public class GameService {
         deck.dealCommunityCards(game);
     }
 
+    //123123123123123123213123213213213213123123123123123123123
     public void determineWinner(Game game) {
         for (Player player : game.getPlayerList()) {
             player.setHandRank(EvaluateHand.evaluateHand(player.getCards(), game.getCommunityCards()).getRankValue());
@@ -226,15 +226,13 @@ public class GameService {
             log.info("WINNER player {} , playerCards {}, communityCards{}, handRank {}", player2.getNickname(), player2.getCards(), game.getCommunityCards(), player2.getHandRank());
             log.info("LOSER player {} , playerCards {}, communityCards{}, handRank {}", player1.getNickname(), player1.getCards(), game.getCommunityCards(), player1.getHandRank());
 
-
-        } else if (ifDoubleTwoHighCards(player1, player2)) {
-
+        } else if (areBothTwoHighCards(player1, player2)) {
+            checkTheHighestCardRank(player1, player2);
+        } else if (areBothPair(player1, player2)) {
+            checkTheHighestPairRank(player1, player2);
+        } else if (areBothTwoPairs(player1, player2)) {
+            checkTheHighestTwoPairsRank(player1,player2);
         }
-
-//        log.info("SAME RANK DRAW/CHECK POSSIBILITIES"); //TODO
-//        player1.setCoins(game.getCurrentBet() / 2); //
-//        player2.setCoins(game.getCurrentBet() / 2); // temporary
-//        game.setCurrentBet(0); //
     }
 
     public void setPlayersCurrentBet0() {
@@ -281,19 +279,34 @@ public class GameService {
     }
 
     private void divideCoinsIfDraw(Player player1, Player player2) {
-        log.info("DRAW - DIVIDED COINS"); //TODO
-        player1.setCoins(player1.getCoins() + game.getCurrentBet() / 2);
-        player2.setCoins(player2.getCoins() + game.getCurrentBet() / 2);
+        log.info("DRAW - DIVIDED COINS");
+        player1.setCoins(player1.getCoins() + (game.getCurrentBet() / 2));
+        player2.setCoins(player2.getCoins() + (game.getCurrentBet() / 2));
         game.setCurrentBet(0);
     }
 
 
-    public boolean ifDoubleTwoHighCards(Player player1, Player player2) {
+    public boolean areBothTwoHighCards(Player player1, Player player2) {
         if (player1.getHandRank() == 1 && player2.getHandRank() == 1) {
             return true;
         }
         return false;
     }
+
+    public boolean areBothPair(Player player1, Player player2) {
+        if (player1.getHandRank() == 2 && player2.getHandRank() == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean areBothTwoPairs(Player player1, Player player2) {
+        if (player1.getHandRank() == 3 && player2.getHandRank() == 3) {
+            return true;
+        }
+        return false;
+    }
+
 
     public void checkTheHighestCardRank(Player player1, Player player2) {
         List<Card> player1Cards = new ArrayList<>(player1.getCards());
@@ -320,8 +333,109 @@ public class GameService {
             }
 
         }
+    }
 
+    public void checkTheHighestPairRank(Player player1, Player player2) {
+        List<Card> player1Cards = new ArrayList<>(player1.getCards());
+        List<Card> player2Cards = new ArrayList<>(player2.getCards());
+        player1Cards.addAll(game.getCommunityCards());
+        player2Cards.addAll(game.getCommunityCards());
 
+        //sort reversed to get the highest card first
+        Collections.sort(player1Cards, Card.RANK_COMPARATOR.reversed());
+        Collections.sort(player2Cards, Card.RANK_COMPARATOR.reversed());
+
+        int player1PairRank = findPairRank(player1Cards);
+        int player2PairRank = findPairRank(player2Cards);
+
+        if (player1PairRank > player2PairRank) {
+            sendCoinsToPlayer1(player1, player2);
+            log.info("{} WIN with pair of {}, {} LOSE with pair of {}", player1.getNickname(), player1PairRank, player2.getNickname(), player2PairRank);
+            return;
+        } else if (player1PairRank < player2PairRank) {
+            sendCoinsToPlayer2(player1, player2);
+            log.info("{} WIN with pair of {}, {} LOSE with pair of {}", player2.getNickname(), player2PairRank, player1.getNickname(), player1PairRank);
+            return;
+        } else {
+            log.info("PAIR VALUE ARE THE SAME. starting checkTheHighestCardRank method...");
+            checkTheHighestCardRank(player1, player2);
+        }
+    }
+
+    public void checkTheHighestTwoPairsRank(Player player1, Player player2) {
+        List<Card> player1Cards = new ArrayList<>(player1.getCards());
+        List<Card> player2Cards = new ArrayList<>(player2.getCards());
+        player1Cards.addAll(game.getCommunityCards());
+        player2Cards.addAll(game.getCommunityCards());
+
+        //sort reversed to get the highest card first
+        Collections.sort(player1Cards, Card.RANK_COMPARATOR.reversed());
+        Collections.sort(player2Cards, Card.RANK_COMPARATOR.reversed());
+
+        PairInfo player1PairInfo = findTwoPairs(player1Cards);
+        PairInfo player2PairInfo = findTwoPairs(player2Cards);
+
+        if (player1PairInfo.getHigherPairRank() > player2PairInfo.getHigherPairRank()) {
+            sendCoinsToPlayer1(player1, player2);
+            log.info("{} WIN with two pairs ({} and {}), {} LOSE with two pairs ({} and {})",
+                    player1.getNickname(), player1PairInfo.getHigherPairRank(), player1PairInfo.getLowerPairRank(),
+                    player2.getNickname(), player2PairInfo.getHigherPairRank(), player2PairInfo.getLowerPairRank());
+        } else if (player1PairInfo.getHigherPairRank() < player2PairInfo.getHigherPairRank()) {
+            sendCoinsToPlayer2(player1, player2);
+            log.info("{} WIN with two pairs ({} and {}), {} LOSE with two pairs ({} and {})",
+                    player2.getNickname(), player2PairInfo.getHigherPairRank(), player2PairInfo.getLowerPairRank(),
+                    player1.getNickname(), player1PairInfo.getHigherPairRank(), player1PairInfo.getLowerPairRank());
+        } else {
+            if (player1PairInfo.getLowerPairRank() > player2PairInfo.getLowerPairRank()) {
+                sendCoinsToPlayer1(player1, player2);
+                log.info("{} WIN with two pairs ({} and {}), {} LOSE with two pairs ({} and {})",
+                        player1.getNickname(), player1PairInfo.getHigherPairRank(), player1PairInfo.getLowerPairRank(),
+                        player2.getNickname(), player2PairInfo.getHigherPairRank(), player2PairInfo.getLowerPairRank());
+            } else if (player1PairInfo.getLowerPairRank() < player2PairInfo.getLowerPairRank()) {
+                sendCoinsToPlayer2(player1, player2);
+                log.info("{} WIN with two pairs ({} and {}), {} LOSE with two pairs ({} and {})",
+                        player2.getNickname(), player2PairInfo.getHigherPairRank(), player2PairInfo.getLowerPairRank(),
+                        player1.getNickname(), player1PairInfo.getHigherPairRank(), player1PairInfo.getLowerPairRank());
+            } else {
+                checkTheHighestCardRank(player1, player2);
+            }
+        }
+
+    }
+
+    public int findPairRank(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+        for (Map.Entry<String, Integer> entry : rankCount.entrySet()) {
+            if (entry.getValue() == 2) {
+                return Card.rankToInt(entry.getKey());
+            }
+        }
+        return -1;
+    }
+
+    private PairInfo findTwoPairs(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+
+        int higherPairRank = 0;
+        int lowerPairRank = 0;
+
+        for (Map.Entry<String, Integer> entry : rankCount.entrySet()) {
+            if (entry.getValue() == 2) {
+                if (higherPairRank == 0) {
+                    higherPairRank = Card.rankToInt(entry.getKey());
+                } else {
+                    lowerPairRank = Card.rankToInt(entry.getKey());
+                }
+            }
+        }
+
+        return new PairInfo(higherPairRank, lowerPairRank);
     }
 
 }
