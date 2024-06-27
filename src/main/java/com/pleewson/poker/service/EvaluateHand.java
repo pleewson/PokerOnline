@@ -14,7 +14,7 @@ public class EvaluateHand {
 
         if (isRoyalFlush(cards)) {
             return HandRankEnum.ROYAL_FLUSH; //10
-        } else if (isStraight(cards) && isFlush(cards)) { // TODO - TO FIX
+        } else if (isStraight(cards) && isFlush(cards)) { // TODO - IMPROVE METHOD
             return HandRankEnum.STRAIGHT_FLUSH; //9
         } else if (isFourOfAKind(cards)) {
             return HandRankEnum.FOUR_OF_A_KIND; //8
