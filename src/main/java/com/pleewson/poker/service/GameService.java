@@ -231,7 +231,13 @@ public class GameService {
         } else if (areBothPair(player1, player2)) {
             checkTheHighestPairRank(player1, player2);
         } else if (areBothTwoPairs(player1, player2)) {
-            checkTheHighestTwoPairsRank(player1,player2);
+            checkTheHighestTwoPairsRank(player1, player2);
+        } else if (areBothThreeOfAKind(player1, player2)) {
+            checkTheHighestThreeOfAKindRank(player1, player2);
+        } else if (areBothStraight(player1, player2)) {
+            //checkTheHighestStraight TODO
+        } else if (areBothFlush(player1, player2)) {
+
         }
     }
 
@@ -307,6 +313,28 @@ public class GameService {
         return false;
     }
 
+    public boolean areBothThreeOfAKind(Player player1, Player player2) {
+        if (player1.getHandRank() == 4 && player2.getHandRank() == 4) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean areBothStraight(Player player1, Player player2) {
+        if (player1.getHandRank() == 5 && player2.getHandRank() == 5) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean areBothFlush(Player player1, Player player2) {
+        if (player1.getHandRank() == 6 && player2.getHandRank() == 6) {
+            return true;
+        }
+        return false;
+    }
+
 
     public void checkTheHighestCardRank(Player player1, Player player2) {
         List<Card> player1Cards = new ArrayList<>(player1.getCards());
@@ -333,6 +361,29 @@ public class GameService {
             }
 
         }
+    }
+
+    public void checkTheHighestKicker(Player player1, List<Card> player1Cards, Player player2, List<Card> player2Cards) {
+        Collections.sort(player1Cards, Card.RANK_COMPARATOR.reversed());
+        Collections.sort(player2Cards, Card.RANK_COMPARATOR.reversed());
+
+        for (int i = 0; i < player1Cards.size(); i++) {
+            int player1KickerRank = Card.rankToInt(player1Cards.get(i).getRank());
+            int player2KickerRank = Card.rankToInt(player2Cards.get(i).getRank());
+
+            if (player1KickerRank > player2KickerRank) {
+                sendCoinsToPlayer1(player1, player2);
+                log.info("{} WIN with kicker {}, {} LOSE with kicker {}",
+                        player1.getNickname(), player1KickerRank, player2.getNickname(), player2KickerRank);
+                return;
+            } else if (player1KickerRank < player2KickerRank) {
+                sendCoinsToPlayer2(player1, player2);
+                log.info("{} WIN with kicker {}, {} LOSE with kicker {}",
+                        player2.getNickname(), player2KickerRank, player1.getNickname(), player1KickerRank);
+                return;
+            }
+        }
+        divideCoinsIfDraw(player1, player2);
     }
 
     public void checkTheHighestPairRank(Player player1, Player player2) {
@@ -403,6 +454,70 @@ public class GameService {
 
     }
 
+    public void checkTheHighestThreeOfAKindRank(Player player1, Player player2) {
+        List<Card> player1Cards = new ArrayList<>(player1.getCards());
+        List<Card> player2Cards = new ArrayList<>(player2.getCards());
+        player1Cards.addAll(game.getCommunityCards());
+        player2Cards.addAll(game.getCommunityCards());
+
+        //sort reversed to get the highest card first
+        Collections.sort(player1Cards, Card.RANK_COMPARATOR.reversed());
+        Collections.sort(player2Cards, Card.RANK_COMPARATOR.reversed());
+
+        int player1ThreeOfAKindRank = findThreeOfAKind(player1Cards);
+        int player2ThreeOfAKindRank = findThreeOfAKind(player2Cards);
+
+        if (player1ThreeOfAKindRank > player2ThreeOfAKindRank) {
+            sendCoinsToPlayer1(player1, player2);
+            log.info("{} WIN with three of a kind {}, {} LOSE with three of a kind {}",
+                    player1.getNickname(), player1ThreeOfAKindRank, player2.getNickname(), player2ThreeOfAKindRank);
+        } else if (player1ThreeOfAKindRank < player2ThreeOfAKindRank) {
+            sendCoinsToPlayer2(player1, player2);
+            log.info("{} WIN with three of a kind {}, {} LOSE with three of a kind {}",
+                    player2.getNickname(), player2ThreeOfAKindRank, player1.getNickname(), player1ThreeOfAKindRank);
+        } else {
+            //remove three of a kind to compare kickers
+            removeThreeOfAKind(player1Cards, player1ThreeOfAKindRank);
+            removeThreeOfAKind(player2Cards, player2ThreeOfAKindRank);
+
+            checkTheHighestKicker(player1, player1Cards, player2, player2Cards);
+        }
+    }
+
+    //FLUSH TODO
+
+    public void checkTheHighestFlushRank(Player player1, Player player2) {
+        List<Card> player1Cards = new ArrayList<>(player1.getCards());
+        List<Card> player2Cards = new ArrayList<>(player2.getCards());
+        player1Cards.addAll(game.getCommunityCards());
+        player2Cards.addAll(game.getCommunityCards());
+
+        //flush cards
+        List<Card> player1FlushCards = findFlushCards(player1Cards);
+        List<Card> player2FlushCards = findFlushCards(player2Cards);
+
+        // Find the highest card in the flush for each player
+        int player1FlushHighCard = findHighestCardInFlush(player1FlushCards);
+        int player2FlushHighCard = findHighestCardInFlush(player2FlushCards);
+
+        if(player1FlushHighCard > player2FlushHighCard){
+            sendCoinsToPlayer1(player1, player2);
+            log.info("{} WIN with flush {}, {} LOSE with flush {}",
+                    player1.getNickname(), player1FlushHighCard, player2.getNickname(), player2FlushHighCard);
+        }else if(player1FlushHighCard < player2FlushHighCard){
+            sendCoinsToPlayer2(player1, player2);
+            log.info("{} WIN with flush {}, {} LOSE with flush {}",
+                    player2.getNickname(), player2FlushHighCard, player1.getNickname(), player1FlushHighCard);
+        }else{
+            //remove flush cards to compare kicker
+            player1Cards.removeAll(player1FlushCards);
+            player2Cards.removeAll(player2FlushCards);
+
+            checkTheHighestKicker(player1, player1Cards, player2, player2Cards);
+        }
+    }
+
+
     public int findPairRank(List<Card> cards) {
         Map<String, Integer> rankCount = new HashMap<>();
         for (Card card : cards) {
@@ -415,6 +530,32 @@ public class GameService {
         }
         return -1;
     }
+
+
+    public int findThreeOfAKind(List<Card> cards) {
+        Map<String, Integer> rankCount = new HashMap<>();
+        for (Card card : cards) {
+            rankCount.put(card.getRank(), rankCount.getOrDefault(card.getRank(), 0) + 1);
+        }
+        for (Map.Entry<String, Integer> entry : rankCount.entrySet()) {
+            if (entry.getValue() == 3) {
+                return Card.rankToInt(entry.getKey());
+            }
+        }
+        return -1;
+    }
+
+    public void removeThreeOfAKind(List<Card> cards, int rank) {
+        cards.removeIf(card -> Card.rankToInt(card.getRank()) == rank);
+    }
+
+//    public void findAndRemoveFlushCards(List<Card> playerCards, List<Card> flushCards){
+//        Map<String, List<Card>> suitMap = new HashMap<>();
+//
+//        for(Card card : playerCards){
+//            suitMap.computeIfAbsent(card.getSuit(), k -> new ArrayList<>()).add(card);
+//        }
+//    }
 
     private PairInfo findTwoPairs(List<Card> cards) {
         Map<String, Integer> rankCount = new HashMap<>();
@@ -436,6 +577,25 @@ public class GameService {
         }
 
         return new PairInfo(higherPairRank, lowerPairRank);
+    }
+
+    private int findHighestCardInFlush(List<Card> cards) {
+       return Card.rankToInt(Collections.max(cards, Card.RANK_COMPARATOR).getRank());
+    }
+
+    private List<Card> findFlushCards(List<Card> cards) {
+        Map<String, List<Card>> suitMap = new HashMap<>();
+
+        for (Card card : cards) {
+            suitMap.computeIfAbsent(card.getSuit(), k -> new ArrayList<>()).add(card);
+        }
+
+        for (List<Card> suitCards : suitMap.values()) {
+            if (suitCards.size() >= 5) {
+                return suitCards;
+            }
+        }
+        return null;
     }
 
 }
