@@ -235,15 +235,18 @@ public class GameService {
         } else if (areBothThreeOfAKind(player1, player2)) {
             checkTheHighestThreeOfAKindRank(player1, player2);
         } else if (areBothStraight(player1, player2)) {
-            //checkTheHighestStraight TODO
+            checkTheHighestStraightRank(player1, player2);
         } else if (areBothFlush(player1, player2)) {
             checkTheHighestFlushRank(player1, player2);
         } else if (areBothFullHouse(player1, player2)) {
             checkTheHighestFullHouseRank(player1, player2);
         } else if (areBothFourOfAKind(player1, player2)) {
             checkTheHighestFourOfAKindRank(player1, player2);
-        }else if(areBothStraightFlush(player1, player2)){
-
+        } else if (areBothStraightFlush(player1, player2)) {
+            checkTheHighestStraightRank(player1, player2);
+        }else if(areBothRoyalFlush(player1, player2)){
+            log.info("DOUBLE ROYAL FLUSH");
+            divideCoinsIfDraw(player1, player2);
         }
     }
 
@@ -355,8 +358,15 @@ public class GameService {
         return false;
     }
 
-    public boolean areBothStraightFlush(Player player1, Player player2){
+    public boolean areBothStraightFlush(Player player1, Player player2) {
         if (player1.getHandRank() == 9 && player2.getHandRank() == 9) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean areBothRoyalFlush(Player player1, Player player2){
+        if (player1.getHandRank() == 10 && player2.getHandRank() == 10) {
             return true;
         }
         return false;
@@ -511,7 +521,30 @@ public class GameService {
         }
     }
 
-    //FLUSH TODO
+
+    public void checkTheHighestStraightRank(Player player1, Player player2) {
+        List<Card> player1Cards = new ArrayList<>(player1.getCards());
+        List<Card> player2Cards = new ArrayList<>(player2.getCards());
+        player1Cards.addAll(game.getCommunityCards());
+        player2Cards.addAll(game.getCommunityCards());
+
+        int player1HighestStraightCard = findHighestStraightCard(player1Cards);
+        int player2HighestStraightCard = findHighestStraightCard(player2Cards);
+
+        if (player1HighestStraightCard > player2HighestStraightCard) {
+            sendCoinsToPlayer1(player1, player2);
+            log.info("{} WIN with straight {}, {} LOSE with straight {}",
+                    player1.getNickname(), player1HighestStraightCard, player2.getNickname(), player2HighestStraightCard);
+        } else if (player1HighestStraightCard < player2HighestStraightCard) {
+            sendCoinsToPlayer2(player1, player2);
+            log.info("{} WIN with straight {}, {} LOSE with straight {}",
+                    player2.getNickname(), player2HighestStraightCard, player1.getNickname(), player1HighestStraightCard);
+        } else {
+            log.info("DRAW. BOTH PLAYERS HAVE SAME HIGHEST STRAIGHT CARD {} {} , {} {}", player1.getNickname(), player1HighestStraightCard, player2.getNickname(), player2HighestStraightCard);
+            divideCoinsIfDraw(player1, player2);
+        }
+    }
+
 
     public void checkTheHighestFlushRank(Player player1, Player player2) {
         List<Card> player1Cards = new ArrayList<>(player1.getCards());
@@ -605,7 +638,7 @@ public class GameService {
             sendCoinsToPlayer2(player1, player2);
             log.info("{} WIN with four of a kind {}, {} LOSE with four of a kind {}",
                     player2.getNickname(), player2FourOfAKindRank, player1.getNickname(), player1FourOfAKindRank);
-        }else{
+        } else {
             //remove four of a kind cards to compare kicker
             removeCardsWithRank(player1Cards, player1FourOfAKindRank);
             removeCardsWithRank(player2Cards, player2FourOfAKindRank);
@@ -660,13 +693,6 @@ public class GameService {
         cards.removeIf(card -> Card.rankToInt(card.getRank()) == rank);
     }
 
-//    public void findAndRemoveFlushCards(List<Card> playerCards, List<Card> flushCards){
-//        Map<String, List<Card>> suitMap = new HashMap<>();
-//
-//        for(Card card : playerCards){
-//            suitMap.computeIfAbsent(card.getSuit(), k -> new ArrayList<>()).add(card);
-//        }
-//    }
 
     private PairInfo findTwoPairs(List<Card> cards) {
         Map<String, Integer> rankCount = new HashMap<>();
@@ -692,6 +718,28 @@ public class GameService {
 
     private int findHighestCardInFlush(List<Card> cards) {
         return Card.rankToInt(Collections.max(cards, Card.RANK_COMPARATOR).getRank());
+    }
+
+
+    public int findHighestStraightCard(List<Card> cards) {
+        Set<Integer> ranks = new HashSet<>();
+        for (Card card : cards) {
+            ranks.add(Card.rankToInt(card.getRank()));
+        }
+
+        List<Integer> sortedRanks = new ArrayList<>(ranks);
+        Collections.sort(sortedRanks);
+        for (int i = 0; i <= sortedRanks.size() - 5; i++) {
+            if (sortedRanks.get(i + 4) - sortedRanks.get(i) == 4) {
+                return sortedRanks.get(i);
+            }
+        }
+
+        // return highest rank when -> Ace as low card (A, 2, 3, 4, 5)
+        if (ranks.contains(14) && ranks.contains(2) && ranks.contains(3) && ranks.contains(4) && ranks.contains(5)) {
+            return 5;
+        }
+        return -1;
     }
 
     private List<Card> findFlushCards(List<Card> cards) {

@@ -121,6 +121,19 @@ public class test {
 
 
 
+//        List<Integer> integerList = new ArrayList<>();
+//        integerList.add(5);
+//        integerList.add(6);
+//        integerList.add(7);
+//        integerList.add(5);
+//        integerList.add(8);
+//
+//        List<Integer> dwadwa = new ArrayList<>();
+//        dwadwa.add(5);
+//        integerList.removeAll(dwadwa);
+//
+//        System.out.println(integerList + " LSLSLSLSLLS");
+
 
     }
 }
