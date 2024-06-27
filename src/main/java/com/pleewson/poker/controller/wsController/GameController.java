@@ -5,7 +5,7 @@ import com.pleewson.poker.model.Card;
 import com.pleewson.poker.model.Game;
 import com.pleewson.poker.repository.PlayerRepository;
 import com.pleewson.poker.service.GameService;
-import com.pleewson.poker.service.MoveRequest;
+import com.pleewson.poker.model.MoveRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,7 +14,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 @Controller
 @Slf4j
 public class GameController {
-
     private final PlayerRepository playerRepository;
     private final GameService gameService;
 

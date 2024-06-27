@@ -19,6 +19,7 @@ import java.util.Map;
 public class WebSocketEventListener {
 
     private final SimpMessageSendingOperations messageTemplate;
+
     @Autowired
     private GameService gameService;
 
@@ -35,5 +36,6 @@ public class WebSocketEventListener {
             disconnectMessage.put("type", "disconnect");
             messageTemplate.convertAndSend("/topic/game", disconnectMessage);
         }
+        //TODO STOP/RESET GAME IF ANY PLAYER DISCONNECT.
     }
 }

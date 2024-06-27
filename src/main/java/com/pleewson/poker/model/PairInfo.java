@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PairInfo {
+
     private int higherPairRank;
     private int lowerPairRank;
 
