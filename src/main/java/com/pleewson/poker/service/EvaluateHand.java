@@ -83,7 +83,7 @@ public class EvaluateHand {
 
     public static boolean isRoyalFlush(List<Card> cards) {
 
-        Collections.sort(cards, Card.RANK_COMPARATOR);
+        cards.sort(Card.RANK_COMPARATOR);
 
         boolean hasTen = false;
         boolean hasJack = false;

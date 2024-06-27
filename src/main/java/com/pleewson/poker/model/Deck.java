@@ -46,6 +46,7 @@ public class Deck {
         return cards.remove(cards.size() - 1);
     }
 
+
     public List<Card> drawCards(int numberOfCards) {
         List<Card> drawnCards = new ArrayList<>();
         for (int i = 0; i < numberOfCards; i++) {
@@ -54,9 +55,11 @@ public class Deck {
         return drawnCards;
     }
 
+
     public void dealInitialCards(Player player) {
         player.setCards(drawCards(2));
     }
+
 
     public void dealCommunityCards(Game game) {
         switch (game.getRound()) {

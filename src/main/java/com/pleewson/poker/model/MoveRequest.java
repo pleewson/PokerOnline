@@ -1,4 +1,4 @@
-package com.pleewson.poker.service;
+package com.pleewson.poker.model;
 
 import lombok.Getter;
 import lombok.Setter;
