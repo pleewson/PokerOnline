@@ -58,11 +58,13 @@ public class LoginController {
         PlayerDetails playerDetails = new PlayerDetails();
         playerDetails.setFirstName(request.getParameter("firstName"));
         playerDetails.setLastName(request.getParameter("lastName"));
-        playerDetails.setCity(request.getParameter("city"));
         playerDetails.setCountry(request.getParameter("country"));
         playerDetails.setCreated(LocalDateTime.now());
         playerDetails.setPlayer(player);
 
+        String isAdultParam = request.getParameter(request.getParameter("isAdult"));
+        boolean isAdult = isAdultParam != null && isAdultParam.equals("on");
+        playerDetails.setAdult(isAdult);
 
         playerDetailsRepository.save(playerDetails);
 

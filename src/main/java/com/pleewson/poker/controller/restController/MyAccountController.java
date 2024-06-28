@@ -1,7 +1,6 @@
 package com.pleewson.poker.controller.restController;
 
 import com.pleewson.poker.entities.Player;
-import com.pleewson.poker.entities.PlayerDetails;
 import com.pleewson.poker.repository.PlayerDetailsRepository;
 import com.pleewson.poker.repository.PlayerRepository;
 import jakarta.servlet.http.HttpSession;
@@ -22,21 +21,22 @@ public class MyAccountController {
     }
 
 
-
-    @GetMapping("/myAccount")
+    @GetMapping("/my-account")
     public String getMyAccount(Model model, HttpSession session) {
         Player player = (Player) session.getAttribute("player");
         int playerTrophies = playerRepository.findTrophiesById(player.getId());
         log.info("trophies amount -> {}", playerTrophies);
         model.addAttribute("playerTrophies", playerTrophies);
-        return "myAccount";
+        return "myAccount/my-account";
     }
 
 
-//    @GetMapping("/myAccount/details")
-//    public String getDetails(Model model, HttpSession session) {
-//        Player player = (Player) session.getAttribute("player");
-//        PlayerDetails playerDetails =
-//    }
+    @GetMapping("/details")
+    public String getDetails(Model model, HttpSession session) {
+        Player player = (Player) session.getAttribute("player"); //TODO create DTO
+        model.addAttribute("player", player);
+
+        return "myAccount/details";
+    }
 
 }
