@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/game/css/page.css}"/>
 </head>
 <body>
-
+<div class="container">
+    <img th:src="@{images/trophie.png}" alt="trophies" class="trophies">
+    <h1 th:text="${playerTrophies}" class="trophies-amount"></h1>
+    <a href="/game" class="button">Details</a> <!--    TODO-->
+    <a href="/scoreboard" class="button">Change Password</a> <!--    TODO-->
+    <a href="/myAccount" class="button">Change Email</a>  <!--    TODO-->
+    <a href="/home" class="button">Back</a>
+</div>
 </body>
 </html>

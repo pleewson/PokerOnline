@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/game/css/page.css}"/>
 </head>
 <body>
-
+<div class="container white">
+    <h1 class="gray">Scoreboard</h1>
+    <table>
+        <thead>
+        <tr>
+            <th class="black">Nickname</th>
+            <th class="gold">Trophies</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iteracja przez listę graczy -->
+        <tr th:each="player : ${players}">
+            <td th:text="${player.nickname}">Nickname</td>
+            <td th:text="${player.trophies}" class="gold">0</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
