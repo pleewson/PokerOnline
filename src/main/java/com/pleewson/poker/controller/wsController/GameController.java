@@ -87,6 +87,7 @@ public class GameController {
     }
 
 
+//    @MessageMapping("/")
     private Map<String, Object> createGameStateResponse(int playerNumber) {
         Game game = gameService.getGame();
         Map<String, Object> gameState = new HashMap<>();
@@ -117,7 +118,17 @@ public class GameController {
 
         Map<String, Object> gameState = new HashMap<>();
         gameState.put("communityCards", communityCards);
-        gameState.put("numCommunityCards", game.getCommunityCards().size());
+
+        if (game.getRound() == 1) { //TODO separate this method
+            gameState.put("numCommunityCards", 0);
+        }else if(game.getRound() == 2){
+            gameState.put("numCommunityCards", 3);
+        }else if(game.getRound() == 3) {
+            gameState.put("numCommunityCards", 4);
+        }else if(game.getRound() == 4) {
+            gameState.put("numCommunityCards", 5);
+        }
+
         gameState.put("currentBet", game.getCurrentBet());
         gameState.put("currentPlayer", game.getCurrentPlayer());
 
@@ -135,7 +146,7 @@ public class GameController {
             List<String> cards = player.getCards().stream()
                     .map(card -> card.getRank() + "-" + card.getSuit())
                     .collect(Collectors.toList());
-            log.info("Players cards: {} ", cards);
+            log.info("Player {} cards: {} ", player.getNickname(), cards);
             gameState.put("player" + player.getPlayerNumber() + "Cards", cards);
         }
         gameState.put("playersStats", playersStats);

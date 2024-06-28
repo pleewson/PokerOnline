@@ -4,10 +4,12 @@ import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.model.Deck;
 import com.pleewson.poker.model.Game;
 import com.pleewson.poker.model.MoveRequest;
+import com.pleewson.poker.repository.PlayerRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,13 +21,17 @@ import java.util.*;
 public class GameService {
     private Game game;
     private Deck deck;
-    private  CompareMethods compareMethods;
+    private CompareMethods compareMethods;
+    private PlayerRepository playerRepository;
+    private final SimpMessageSendingOperations messageTemplate;
 
     @Autowired
-    public GameService(Game game, Deck deck, CompareMethods compareMethods) {
+    public GameService(Game game, Deck deck, CompareMethods compareMethods, PlayerRepository playerRepository, SimpMessageSendingOperations messageTemplate) {
         this.game = game;
         this.deck = deck;
         this.compareMethods = compareMethods;
+        this.messageTemplate = messageTemplate;
+        this.playerRepository = playerRepository;
     }
 
 
@@ -38,6 +44,7 @@ public class GameService {
 
     public void startGame() {
         game.setGameStarted(true);
+        deck.dealCommunityCards(game);
     }
 
 
@@ -46,16 +53,17 @@ public class GameService {
             throw new IllegalStateException("Game has already started.");
         }
 
-        player.setPlayerNumber(game.getPlayerList().size() + 1);
+        player.setPlayerNumber(game.getPlayerList().size() + 1); //TODO separate this method
+
         if (game.getPlayerList().size() >= 2) {
             throw new IllegalStateException("Game is full.");
         }
+
+        if (game.getPlayerList().contains(player)) {
+            throw new IllegalStateException("You are already in game. Waiting for second player");
+        }
+
         game.addPlayer(player);
-    }
-
-
-    public void removePlayer(Long playerId) {
-        game.getPlayerList().removeIf(player -> player.getId().equals(playerId));
     }
 
 
@@ -173,7 +181,10 @@ public class GameService {
             default:
                 throw new IllegalArgumentException("Invalid move type");
         }
+
+        checkIfPlayersAllIn();
         checkIfGameIsFinishedAndDetermineWinner();
+
     }
 
 
@@ -189,13 +200,13 @@ public class GameService {
     }
 
 
-    public void startNewRound() {
+    public void startNewRound() { //TODO change the name.
         log.info("Starting a new round");
 
         game.setRound(1);
         deck.initializeDeck();
         deck.shuffleDeck();
-        game.setCommunityCards(new ArrayList<>());
+        deck.dealCommunityCards(game);
         for (Player player : game.getPlayerList()) {
             player.setCards(null);
             deck.dealInitialCards(player);
@@ -209,9 +220,8 @@ public class GameService {
         if (game.getRound() == 5) {
             determineWinner(game);
             nextPlayer();
-            game.setRound(1);
+            startNewRound();
         }
-        deck.dealCommunityCards(game);
     }
 
 
@@ -229,6 +239,16 @@ public class GameService {
     }
 
 
+    public void checkIfPlayersAllIn() {
+        List<Player> players = game.getPlayerList();
+        if (players.get(0).getCoins() == 0 && players.get(1).getCoins() == 0 && game.getCurrentBet() == 1000) {
+            log.info("ALL IN");
+            nextRound();
+            determineWinner(game);
+        }
+    }
+
+
     public void checkIfGameIsFinishedAndDetermineWinner() {
         List<Player> players = game.getPlayerList();
         Player player1 = players.get(0);
@@ -236,15 +256,27 @@ public class GameService {
 
         if (player1.getCoins() < 10 && player1.getCurrentBet() == 0 && game.getCurrentBet() == 0) {
             player2.setTrophies(player2.getTrophies() + 1);
+            playerRepository.save(player2);
             log.info(player2.getNickname() + " won the game, +1 trophy");
-            //TODO redirect players to scoreboard
+            createNewGame();
+            sendRedirectMessage();  //redirect players to scoreboards
         }
 
         if (player2.getCoins() < 10 && player2.getCurrentBet() == 0 && game.getCurrentBet() == 0) {
             player1.setTrophies(player1.getTrophies() + 1);
+            playerRepository.save(player1);
             log.info(player1.getNickname() + " won the game, +1 trophy");
-            //TODO redirect players to scoreboard
+            createNewGame();
+            sendRedirectMessage(); //redirect players to scoreboards
         }
+    }
+
+    private void sendRedirectMessage() {
+        Map<String, Object> redirectMessage = new HashMap<>();
+        redirectMessage.put("type", "finish");
+        redirectMessage.put("url", "/scoreboard");
+
+        messageTemplate.convertAndSend("/topic/game", redirectMessage);
     }
 
 
@@ -252,6 +284,7 @@ public class GameService {
         player1.setCoins(player1.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
         game.setCurrentBet(0);
         player1.setCurrentBet(0);
+        player2.setCurrentBet(0);
     }
 
 
@@ -259,6 +292,7 @@ public class GameService {
         player2.setCoins(player2.getCoins() + game.getCurrentBet() + player1.getCurrentBet() + player2.getCurrentBet());
         game.setCurrentBet(0);
         player2.setCurrentBet(0);
+        player1.setCurrentBet(0);
     }
 
 
@@ -305,7 +339,7 @@ public class GameService {
             compareMethods.checkTheHighestFourOfAKindRank(player1, player2);
         } else if (compareMethods.areBothStraightFlush(player1, player2)) {
             compareMethods.checkTheHighestStraightRank(player1, player2);
-        }else if(compareMethods.areBothRoyalFlush(player1, player2)){
+        } else if (compareMethods.areBothRoyalFlush(player1, player2)) {
             log.info("DOUBLE ROYAL FLUSH");
             divideCoinsIfDraw(player1, player2);
         }

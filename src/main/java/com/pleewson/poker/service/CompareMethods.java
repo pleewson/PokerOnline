@@ -39,6 +39,7 @@ public class CompareMethods implements CompareMethodsInterface {
                 log.info("{} WIN with {}, {} LOSE with {}", player2.getNickname(), player2CardRank, player1.getNickname(), player1CardRank);
                 return;
             } else {
+                log.info("CHECKING THE HIGHEST CARD");
                 gameService.divideCoinsIfDraw(player1, player2);
             }
 
@@ -56,9 +57,11 @@ public class CompareMethods implements CompareMethodsInterface {
         if (player1PairRank > player2PairRank) {
             gameService.sendCoinsToPlayer1(player1, player2);
             log.info("{} WIN with pair of {}, {} LOSE with pair of {}", player1.getNickname(), player1PairRank, player2.getNickname(), player2PairRank);
+            return;
         } else if (player1PairRank < player2PairRank) {
             gameService.sendCoinsToPlayer2(player1, player2);
             log.info("{} WIN with pair of {}, {} LOSE with pair of {}", player2.getNickname(), player2PairRank, player1.getNickname(), player1PairRank);
+            return;
         } else {
             log.info("PAIR VALUE ARE THE SAME. starting checkTheHighestCardRank method...");
             checkTheHighestCardRank(player1, player2);
@@ -95,6 +98,7 @@ public class CompareMethods implements CompareMethodsInterface {
                         player2.getNickname(), player2PairInfo.getHigherPairRank(), player2PairInfo.getLowerPairRank(),
                         player1.getNickname(), player1PairInfo.getHigherPairRank(), player1PairInfo.getLowerPairRank());
             } else {
+                log.info("BOTH PLAYERS HAVE PAIR");
                 checkTheHighestCardRank(player1, player2);
             }
         }
@@ -247,7 +251,7 @@ public class CompareMethods implements CompareMethodsInterface {
     public boolean areBothTwoHighCards(Player player1, Player player2) {
         return player1.getHandRank() == 1 && player2.getHandRank() == 1;
     }
-
+//AAA 77
     public boolean areBothPair(Player player1, Player player2) {
         return player1.getHandRank() == 2 && player2.getHandRank() == 2;
     }
