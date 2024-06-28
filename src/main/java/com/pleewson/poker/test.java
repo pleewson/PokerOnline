@@ -137,7 +137,33 @@ public class test {
 
         System.out.println(BCrypt.hashpw("admin", BCrypt.gensalt()));
 
-        List<Integer> integerList = new ArrayList<>();;
+        List<Integer> integerList = new ArrayList<>();
 
-    }
+        //[9-S, 6-H, 3-S, K-H, 9-C]
+       //K-C, 5-C]
+       //[8-H, A-H]
+
+        List<Card> stol = new ArrayList<>();
+        stol.add(new Card("S", "3"));
+        stol.add(new Card("S", "2"));
+        stol.add(new Card("H", "8"));
+        stol.add(new Card("H", "K"));
+        stol.add(new Card("C", "Q"));
+
+        List<Card> gracz1 = new ArrayList<>();
+
+        gracz1.add(new Card("S", "8"));
+        gracz1.add(new Card("S", "8"));
+
+        List<Card> gracz2 = new ArrayList<>();
+        gracz2.add(new Card("H", "2"));
+        gracz2.add(new Card("C", "4"));
+
+//        System.out.println("is there PAIR? : " + evaluateHand.isPair(manualHand_PAIR));
+        System.out.println("TUTAJ TEST   " + EvaluateHand.evaluateHand(gracz1,stol).getRankValue());
+        System.out.println("TUTAJ TEST   " + EvaluateHand.evaluateHand(gracz2,stol).getRankValue());
+
+
+
+        }
 }
