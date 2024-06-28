@@ -137,6 +137,7 @@ public class test {
 
         System.out.println(BCrypt.hashpw("admin", BCrypt.gensalt()));
 
+        List<Integer> integerList = new ArrayList<>();;
 
     }
 }
