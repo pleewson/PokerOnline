@@ -16,7 +16,7 @@ public class PlayerDetails {
     private String firstName;
     private String lastName;
     private String country;
-    private String city;
+    private boolean isAdult;
     private LocalDateTime created;
     private LocalDateTime updated;
 
