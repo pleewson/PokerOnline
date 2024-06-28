@@ -44,6 +44,7 @@ public class GameService {
 
     public void startGame() {
         game.setGameStarted(true);
+        deck.dealCommunityCards(game);
     }
 
 
@@ -63,11 +64,6 @@ public class GameService {
         }
 
         game.addPlayer(player);
-    }
-
-
-    public void removePlayer(Long playerId) {
-        game.getPlayerList().removeIf(player -> player.getId().equals(playerId));
     }
 
 
@@ -204,7 +200,7 @@ public class GameService {
     }
 
 
-    public void startNewRound() {
+    public void startNewRound() { //TODO change the name.
         log.info("Starting a new round");
 
         game.setRound(1);
@@ -224,9 +220,8 @@ public class GameService {
         if (game.getRound() == 5) {
             determineWinner(game);
             nextPlayer();
-            game.setRound(1);
+            startNewRound();
         }
-        deck.dealCommunityCards(game);
     }
 
 
@@ -263,6 +258,7 @@ public class GameService {
             player2.setTrophies(player2.getTrophies() + 1);
             playerRepository.save(player2);
             log.info(player2.getNickname() + " won the game, +1 trophy");
+            createNewGame();
             sendRedirectMessage();  //redirect players to scoreboards
         }
 
@@ -270,6 +266,7 @@ public class GameService {
             player1.setTrophies(player1.getTrophies() + 1);
             playerRepository.save(player1);
             log.info(player1.getNickname() + " won the game, +1 trophy");
+            createNewGame();
             sendRedirectMessage(); //redirect players to scoreboards
         }
     }

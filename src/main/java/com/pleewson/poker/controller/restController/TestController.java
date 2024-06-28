@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class TestController {
-
     private PlayerRepository playerRepository;
 
     public TestController(PlayerRepository playerRepository) {
