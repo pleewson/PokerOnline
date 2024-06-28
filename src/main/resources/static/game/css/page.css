@@ -31,3 +31,7 @@ body {
 .button:hover {
     background-color: #faa3c7;
 }
+
+.white{
+    color: white;
+}
