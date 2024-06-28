@@ -3,6 +3,7 @@ package com.pleewson.poker;
 import com.pleewson.poker.model.Card;
 import com.pleewson.poker.model.Deck;
 import com.pleewson.poker.service.EvaluateHand;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -133,6 +134,8 @@ public class test {
 //        integerList.removeAll(dwadwa);
 //
 //        System.out.println(integerList + " LSLSLSLSLLS");
+
+        System.out.println(BCrypt.hashpw("admin", BCrypt.gensalt()));
 
 
     }

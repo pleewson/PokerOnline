@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/game/css/page.css}"/>
+</head>
+<body>
+<div class="container white">
+    <p>First Name: <span th:text="${player.playerDetails.firstName}"></span></p>
+    <p>Last Name: <span th:text="${player.playerDetails.lastName}"></span></p>
+    <p>email: <span th:text="${player.email}"></span></p>
+    <p>Country: <span th:text="${player.playerDetails.country}"></span></p>
+    <a href="/my-account" class="button">Back</a>
+</div>
+</body>
+</html>

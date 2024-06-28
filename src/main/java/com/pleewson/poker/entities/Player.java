@@ -44,13 +44,10 @@ public class Player {
     private List<Card> cards;
 
     @Transient
-    private boolean isActive = true;
+    private boolean isActive;
 
     @Transient
     private int playerNumber;
-
-    @Transient
-    private int gameCoins;
 
     @Transient
     private boolean check;
