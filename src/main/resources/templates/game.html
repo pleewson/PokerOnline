@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Poker game</title>
-    <link rel="stylesheet" th:href="@{/game/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/game/css/game.css}"/>
 </head>
 <body>
 
@@ -65,12 +65,12 @@
         <img id="communityCard5" th:src="@{/images/cards/BACK.png}" alt="Card Image"/>
     </div>
 
+    <div>
+        bank: <span id="bank">0</span>
+    </div>
+
 </div>
 
-
-<div>
-    bank: <span id="bank">0</span>
-</div>
 
 <div>
     info: <span id="info"></span>

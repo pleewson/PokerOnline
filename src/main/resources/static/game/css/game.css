@@ -1,0 +1,66 @@
+#player1 {
+    float: left;
+    width: 45%;
+}
+
+#player2 {
+    float: right;
+    width: 45%;
+}
+
+.hidden {
+    display: none;
+}
+
+.player-box {
+    margin: 10px;
+    padding: 10px;
+}
+
+.makeMoveForm {
+    margin-top: 10px;
+}
+
+.move_button {
+    margin-right: 5px;
+}
+
+.cards img {
+    max-width: 100px;
+    height: auto;
+}
+
+.join-button {
+    margin-bottom: 20px; /* Margines na dole przycisku */
+    text-align: center; /* Wyśrodkowanie przycisku */
+}
+
+.join-button button {
+    background-color: #e74c3c; /* Kolor tła przycisku Join! */
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: background-color 0.3s;
+}
+
+.join-button button:hover {
+    background-color: #c0392b; /* Kolor tła po najechaniu myszą */
+}
+
+.bank-info {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px; /* Margines na górze dla sekcji Bank i Info */
+}
+
+body{
+    background-image: url('../../images/table.jpg'); /* Ścieżka do zdjęcia tła */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    /*display: flex;*/
+    color: white;
+}
