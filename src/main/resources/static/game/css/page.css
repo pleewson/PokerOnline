@@ -31,3 +31,30 @@ body {
 .button:hover {
     background-color: #faa3c7;
 }
+
+.trophies{
+    max-width: 150px;
+    height: auto;
+    margin-bottom: -5px;
+}
+
+.trophies-amount{
+    color:gold;
+    margin-top: -10px;
+}
+
+.white{
+    color: white;
+}
+
+.gold{
+    color: gold;
+}
+
+.gray{
+    color:gray;
+}
+
+.black{
+    color:black;
+}

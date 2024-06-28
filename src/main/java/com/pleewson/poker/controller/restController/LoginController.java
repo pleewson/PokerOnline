@@ -46,6 +46,7 @@ public class LoginController {
         return "register";
     }
 
+
     @PostMapping("/register")
     public String registerUser(HttpServletRequest request) {
         Player player = new Player();
@@ -66,5 +67,13 @@ public class LoginController {
         playerDetailsRepository.save(playerDetails);
 
         return "redirect:home";
+    }
+
+
+    @PostMapping("/logout")
+    public String logoutUser(HttpSession session) {
+        session.invalidate();
+
+        return "redirect:welcome";
     }
 }

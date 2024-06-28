@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/game/css/page.css}"/>
 </head>
 <body>
 
-<h1>register account</h1>  </br>
-
-<form method="post" action="/login">
-    email:<input type="text" name="email"/> </br>
-    password:<input type="text" name="password"/> </br>
-    <button type="submit"> submit!</button>
-</form>
+<div class="container white">
+    <h1>Login</h1>
+    <form method="post" action="/login">
+        email:<input type="text" name="email"/> </br>
+        password:<input type="text" name="password"/> </br>
+        <button type="submit"> submit!</button>
+    </form>
+</div>
 
 </body>
 </html>
