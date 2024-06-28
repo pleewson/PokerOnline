@@ -87,6 +87,10 @@ public class GameController {
     }
 
 
+    @MessageMapping("/")
+
+
+
     private Map<String, Object> createGameStateResponse(int playerNumber) {
         Game game = gameService.getGame();
         Map<String, Object> gameState = new HashMap<>();

@@ -31,7 +31,6 @@ function connect(event) {
 
         stompClient.connect({}, onConnected, onError);
     }
-
     event.preventDefault();
 }
 
@@ -50,7 +49,7 @@ function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
 
     if (message.type === "disconnect") {
-        console.log("user has disconnected 123123123123123123123123 ");
+        console.log("user has disconnected");
         onDisconnected();
     } else {
         let nickname = message.nickname;
@@ -138,6 +137,7 @@ function onMessageReceived(payload) {
     }
 }
 
+
 function makeMove(event) {
     event.preventDefault();
     let moveType = event.target.querySelector("button[type=submit]:hover").value; //:hover - mouse point
@@ -181,8 +181,6 @@ function updateUI() {
     }
 }
 
-//function updatePlayerCards
-
 function updatePlayerStats(playerNumber, coins, currentBet) {
     if (playerNumber === 1) {
         player1Coins.textContent = coins;
@@ -197,16 +195,24 @@ function updatePlayerStats(playerNumber, coins, currentBet) {
 window.addEventListener("beforeunload", () => {
     if (stompClient) {
         stompClient.disconnect(() => {
+            sessionStorage.
             onDisconnected("Rozłączono z serwerem WebSocket");
         });
     }
+
 });
+
 
 function onDisconnected() {
     playerJoinForm.classList.remove('hidden');
     gameView.classList.add('hidden');
 
-    infoJoin.textContent = "Second player has disconnected ";
+    currentPlayer = null;
+    isGameStarted = false;
+
+    infoJoin.textContent = "Second player has disconnected." +
+        " REFRESH SITE BEFORE STARTING A NEW GAME:)";
+
 }
 
 playerJoinForm.addEventListener('submit', connect, true);

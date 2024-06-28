@@ -1,9 +1,9 @@
 package com.pleewson.poker.config;
 
+import com.pleewson.poker.model.Game;
 import com.pleewson.poker.service.GameService;
-import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -14,14 +14,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class WebSocketEventListener {
-
     private final SimpMessageSendingOperations messageTemplate;
+    private final GameService gameService;
 
-    @Autowired
-    private GameService gameService;
+    public WebSocketEventListener(SimpMessageSendingOperations messageTemplate, GameService gameService) {
+        this.messageTemplate = messageTemplate;
+        this.gameService = gameService;
+    }
+
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
@@ -29,13 +31,13 @@ public class WebSocketEventListener {
         Long playerId = (Long) headerAccessor.getSessionAttributes().get("playerId");
 
         if (playerId != null) {
-            gameService.removePlayer(playerId);
-            log.info("LOGGGGGEEEER -> WebSocket user disconnected with ID : {}", playerId);
+            log.info("user disconnected with ID : {}", playerId);
+            gameService.setGame(new Game());
+            log.info("game has been stopped");
 
-            Map<String,Object> disconnectMessage = new HashMap<>();
+            Map<String, Object> disconnectMessage = new HashMap<>();
             disconnectMessage.put("type", "disconnect");
-            messageTemplate.convertAndSend("/topic/game", disconnectMessage);
+            messageTemplate.convertAndSend("/topic/game", disconnectMessage); //sending message to JS that user has benn disconnected
         }
-        //TODO STOP/RESET GAME IF ANY PLAYER DISCONNECT.
     }
 }
