@@ -51,7 +51,12 @@ function onMessageReceived(payload) {
     if (message.type === "disconnect") {
         console.log("user has disconnected");
         onDisconnected();
-    } else {
+    }
+
+    if(message.type === "finish") {
+        window.location.href = message.url;  //redirect players to scoreboards
+    }
+
         let nickname = message.nickname;
         currentPlayer = message.currentPlayer;
         isGameStarted = message.gameStarted;
@@ -134,7 +139,7 @@ function onMessageReceived(payload) {
 
         updateUI();
 
-    }
+
 }
 
 
