@@ -19,7 +19,7 @@
         <!-- Iteracja przez listę graczy -->
         <tr th:each="player : ${players}">
             <td th:text="${player.nickname}">Nickname</td>
-            <td th:text="${player.trophies}" class="gold">0</td>
+            <td th:text="${player.trophies.amount}" class="gold">0</td>
         </tr>
         </tbody>
     </table>
