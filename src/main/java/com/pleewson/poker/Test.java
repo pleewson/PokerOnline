@@ -12,8 +12,6 @@ public class Test {
 
         EvaluateHand evaluateHand = new EvaluateHand();
 
-//        String[] suits = {"H", "D", "C", "S"};
-//        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
         //COLOR
         List<Card> manualHand_COLOR = new ArrayList<>();
@@ -120,27 +118,10 @@ public class Test {
 
 
 
-//        List<Integer> integerList = new ArrayList<>();
-//        integerList.add(5);
-//        integerList.add(6);
-//        integerList.add(7);
-//        integerList.add(5);
-//        integerList.add(8);
-//
-//        List<Integer> dwadwa = new ArrayList<>();
-//        dwadwa.add(5);
-//        integerList.removeAll(dwadwa);
-//
-//        System.out.println(integerList + " LSLSLSLSLLS");
 
-        System.out.println(BCrypt.hashpw("admin", BCrypt.gensalt()));
 
+        //---//
         List<Integer> integerList = new ArrayList<>();
-
-        //[9-S, 6-H, 3-S, K-H, 9-C]
-       //K-C, 5-C]
-       //[8-H, A-H]
-
         List<Card> stol = new ArrayList<>();
         stol.add(new Card("S", "3"));
         stol.add(new Card("S", "2"));
@@ -157,7 +138,7 @@ public class Test {
         gracz2.add(new Card("H", "2"));
         gracz2.add(new Card("C", "4"));
 
-//        System.out.println("is there PAIR? : " + evaluateHand.isPair(manualHand_PAIR));
+        System.out.println("is there PAIR? : " + evaluateHand.isPair(manualHand_PAIR));
         System.out.println("TUTAJ TEST   " + EvaluateHand.evaluateHand(gracz1,stol).getRankValue());
         System.out.println("TUTAJ TEST   " + EvaluateHand.evaluateHand(gracz2,stol).getRankValue());
 
