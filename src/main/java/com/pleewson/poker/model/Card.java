@@ -1,5 +1,6 @@
 package com.pleewson.poker.model;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,9 +8,13 @@ import java.util.Comparator;
 
 @Getter
 @Setter
+//@Embeddable //TODO CO TO ROBI?
 public class Card {
     private String suit;
     private String rank;
+
+    public Card() {
+    }
 
     public Card(String suit, String rank) {
         this.suit = suit;
