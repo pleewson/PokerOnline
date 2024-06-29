@@ -21,17 +21,19 @@ import java.util.*;
 public class GameService {
     private Game game;
     private Deck deck;
+    private CardsHistoryService cardsHistoryService;
     private CompareMethods compareMethods;
     private PlayerRepository playerRepository;
     private final SimpMessageSendingOperations messageTemplate;
 
     @Autowired
-    public GameService(Game game, Deck deck, CompareMethods compareMethods, PlayerRepository playerRepository, SimpMessageSendingOperations messageTemplate) {
+    public GameService(Game game, Deck deck, CompareMethods compareMethods, PlayerRepository playerRepository, SimpMessageSendingOperations messageTemplate, CardsHistoryService cardsHistoryService) {
         this.game = game;
         this.deck = deck;
         this.compareMethods = compareMethods;
         this.messageTemplate = messageTemplate;
         this.playerRepository = playerRepository;
+        this.cardsHistoryService = cardsHistoryService;
     }
 
 
@@ -45,6 +47,11 @@ public class GameService {
     public void startGame() {
         game.setGameStarted(true);
         deck.dealCommunityCards(game);
+
+        cardsHistoryService.saveCardsHistory(
+                game.getPlayerList().get(0).getCards(),
+                game.getPlayerList().get(1).getCards(),
+                game.getCommunityCards());
     }
 
 
@@ -184,7 +191,6 @@ public class GameService {
 
         checkIfPlayersAllIn();
         checkIfGameIsFinishedAndDetermineWinner();
-
     }
 
 
@@ -204,13 +210,17 @@ public class GameService {
         log.info("Starting a new round");
 
         game.setRound(1);
-        deck.initializeDeck();
+        deck.setCards(deck.initializeDeck());
         deck.shuffleDeck();
         deck.dealCommunityCards(game);
         for (Player player : game.getPlayerList()) {
             player.setCards(null);
             deck.dealInitialCards(player);
         }
+        cardsHistoryService.saveCardsHistory(
+                game.getPlayerList().get(0).getCards(),
+                game.getPlayerList().get(1).getCards(),
+                game.getCommunityCards());
     }
 
 

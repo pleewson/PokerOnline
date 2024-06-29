@@ -53,13 +53,13 @@ public class GameController {
 
         gameService.addPlayer(player);
         gameService.getDeck().dealInitialCards(player);
-        log.info("NEW PLAYER CARDS ->->-> " + player.getCards().toString()); //work
+        log.info("NEW PLAYER CARDS ->->-> " + player.getCards().toString());
 
-        if (gameService.getGame().getPlayerList().size() == 2) {
+        if (gameService.getGame().getPlayerList().size() == 2) { //TODO separate this method
             gameService.startGame();
         }
 
-        player.setPlayerNumber(gameService.getGame().getPlayerList().size()); // nowe
+        player.setPlayerNumber(gameService.getGame().getPlayerList().size());
 
         log.info("---- playerList size --- {} ---- ", game.getPlayerList().size());
         log.info("------ PLAYER NICKNAME : {}   PLAYER NUMBER  -> {}", player.getNickname(), player.getPlayerNumber());
