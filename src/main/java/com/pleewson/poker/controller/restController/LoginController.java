@@ -2,8 +2,10 @@ package com.pleewson.poker.controller.restController;
 
 import com.pleewson.poker.entities.Player;
 import com.pleewson.poker.entities.PlayerDetails;
+import com.pleewson.poker.entities.Trophies;
 import com.pleewson.poker.repository.PlayerDetailsRepository;
 import com.pleewson.poker.repository.PlayerRepository;
+import com.pleewson.poker.repository.TrophiesRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +20,12 @@ import java.time.LocalDateTime;
 public class LoginController {
     PlayerRepository playerRepository;
     PlayerDetailsRepository playerDetailsRepository;
+    TrophiesRepository trophiesRepository;
 
-    LoginController(PlayerRepository playerRepository, PlayerDetailsRepository playerDetailsRepository) {
+    LoginController(PlayerRepository playerRepository, PlayerDetailsRepository playerDetailsRepository, TrophiesRepository trophiesRepository) {
         this.playerRepository = playerRepository;
         this.playerDetailsRepository = playerDetailsRepository;
+        this.trophiesRepository = trophiesRepository;
     }
 
 
@@ -76,9 +80,12 @@ public class LoginController {
         String isAdultParam = request.getParameter(request.getParameter("isAdult"));
         boolean isAdult = (isAdultParam != null && isAdultParam.equals("on"));
         playerDetails.setAdult(isAdult);
-
         playerDetails.setPlayer(player);
 
+        Trophies trophies = new Trophies();
+        trophies.setPlayer(player);
+
+        trophiesRepository.save(trophies);
         playerDetailsRepository.save(playerDetails);
 
         return "redirect:home";

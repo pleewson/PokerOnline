@@ -255,7 +255,7 @@ public class GameService {
         Player player2 = players.get(1);
 
         if (player1.getCoins() < 10 && player1.getCurrentBet() == 0 && game.getCurrentBet() == 0) {
-            player2.setTrophies(player2.getTrophies() + 1);
+            player2.winMatch();
             playerRepository.save(player2);
             log.info(player2.getNickname() + " won the game, +1 trophy");
             createNewGame();
@@ -263,7 +263,7 @@ public class GameService {
         }
 
         if (player2.getCoins() < 10 && player2.getCurrentBet() == 0 && game.getCurrentBet() == 0) {
-            player1.setTrophies(player1.getTrophies() + 1);
+            player1.winMatch();
             playerRepository.save(player1);
             log.info(player1.getNickname() + " won the game, +1 trophy");
             createNewGame();
