@@ -28,7 +28,7 @@ public class MyAccountController {
     @GetMapping("/my-account")
     public String getMyAccount(Model model, HttpSession session) {
         Player player = (Player) session.getAttribute("player");
-        int playerTrophies = playerRepository.findTrophiesById(player.getId());
+        int playerTrophies = player.getTrophies().getAmount();
         log.info("trophies amount -> {}", playerTrophies);
         model.addAttribute("playerTrophies", playerTrophies);
         return "myAccount/my-account";

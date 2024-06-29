@@ -30,9 +30,11 @@ public class Player {
     @Email
     private String email;
     private String password;
-    private int trophies = 0;
 
-    @OneToOne(mappedBy = "player")
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)
+    private Trophies trophies;
+
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)
     private PlayerDetails playerDetails;
 
     @Transient
@@ -56,6 +58,11 @@ public class Player {
     @Transient
     private Integer handRank;
 
+    public void winMatch(){
+        if(trophies != null){
+            trophies.incrementAmount();
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,6 +70,11 @@ public class Player {
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
         return Objects.equals(id, player.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

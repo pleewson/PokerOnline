@@ -10,8 +10,11 @@ import java.util.List;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Player findByEmail(String email);
 
+    @Query("SELECT p FROM Player p JOIN p.trophies t ORDER BY t.amount DESC")
     List<Player> findAllByOrderByTrophiesDesc();
 
-    @Query("SELECT p.trophies FROM Player p WHERE p.id = :playerId")
-    int findTrophiesById(@Param("playerId") Long playerId);
+
+//    @Query("SELECT p.trophies FROM Player p WHERE p.id = :playerId")
+//    int findTrophiesById(@Param("playerId") Long playerId);
+
 }
