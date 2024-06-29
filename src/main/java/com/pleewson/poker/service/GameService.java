@@ -150,7 +150,6 @@ public class GameService {
                     game.setRound(4); //last one
                     nextRound();
                     log.info("CHECK - 2");
-                    //co jak wygra gracz co dal allina
                     break;
 
                 } else {
