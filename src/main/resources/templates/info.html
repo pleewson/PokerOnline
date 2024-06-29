@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Poker Info</title>
+    <link rel="stylesheet" th:href="@{/game/css/page.css}"/>
 </head>
 <body>
-there will be info about poker.
+
+<div class="container">
+    <img th:src="@{images/pokerHandRank.gif}" alt="pokerHandRank">
+    <a href="/home" class="button">Home</a>
+</div>
+
 </body>
 </html>
