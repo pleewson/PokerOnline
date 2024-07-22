@@ -8,7 +8,6 @@ This project is a real-time poker game for two players. The game allows two play
 - **User Registration and Authentication**: Players can register and log in to their accounts.
 - **Dynamic Ranking**: Display of player rankings based on trophies won.
 - **Profile Management**: Players can update their email, password, and personal details.
-- **Responsive UI**: User interface is responsive and user-friendly.
 
 ## Technologies Used
 - **Backend**:
