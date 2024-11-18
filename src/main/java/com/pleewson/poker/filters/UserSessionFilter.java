@@ -19,7 +19,7 @@ public class UserSessionFilter implements Filter {
         HttpSession session = httpRequest.getSession(false);
         String requestURI = httpRequest.getRequestURI();
 
-        // Check if the request is for static resources (CSS, JS, images)
+        // Check if the request is for static resources (CSS, JS, images) //TODO
         if (requestURI.startsWith("/game/css") || requestURI.startsWith("/js") || requestURI.startsWith("/images")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;

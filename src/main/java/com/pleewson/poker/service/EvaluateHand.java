@@ -4,6 +4,7 @@ import com.pleewson.poker.enums.HandRankEnum;
 import com.pleewson.poker.model.Card;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EvaluateHand {
 
@@ -221,6 +222,13 @@ public class EvaluateHand {
             }
         }
         return false;
+    }
+
+
+    public static boolean isPair2(List<Card> cards) {
+        return cards.stream()
+                .collect(Collectors.groupingBy(Card::getRank, Collectors.counting()))
+                .values().stream().anyMatch(val -> val == 2);
     }
 
 }
