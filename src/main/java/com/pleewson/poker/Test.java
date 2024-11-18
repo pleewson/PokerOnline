@@ -1,15 +1,13 @@
 package com.pleewson.poker;
 
 import com.pleewson.poker.model.Card;
-import com.pleewson.poker.model.Deck;
 import com.pleewson.poker.service.EvaluateHand;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-public class test {
+public class Test {
     public static void main(String[] args) {
 
         EvaluateHand evaluateHand = new EvaluateHand();
