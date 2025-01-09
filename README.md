@@ -9,18 +9,7 @@ This project is a real-time poker game for two players. The game allows two play
     git clone https://github.com/pleewson/PokerOnline.git
     cd PokerOnline
     ```
-
-2. **Configure the database**:
-    - Create a MySQL database named `poker_game`.
-    - Update the `application.properties` file in `src/main/resources` with your database username and password:
-      ```properties
-      spring.datasource.url=jdbc:mysql://localhost:3306/poker_game
-      spring.datasource.username=your_username
-      spring.datasource.password=your_password
-      spring.jpa.hibernate.ddl-auto=update
-      ```
-
-3. **Run the application**:
+2. **Run the application**:
     ```
     docker-compose up --build
     ```
