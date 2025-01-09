@@ -4,6 +4,13 @@
 This project is a real-time poker game for two players. The game allows two players to play poker in real-time, utilizing various modern technologies to ensure smooth gameplay and efficient data handling.
 
 ### Setup
+
+### Prerequisites
+- Java 11 or higher
+- MySQL
+- Maven
+- Docker
+- 
 1. **Clone the repository**:
     ```
     git clone https://github.com/pleewson/PokerOnline.git
@@ -33,6 +40,9 @@ This project is a real-time poker game for two players. The game allows two play
 - Access the `My Account` section to update your email, password, and other personal details.
 - Your current trophies and other game statistics are also displayed here.
 
+### Viewing the Scoreboard
+- Go to `/scoreboard` to see the ranking of players based on the number of trophies won.
+
 ## Features
 - **Real-time Gameplay**: Players can play poker in real-time thanks to WebSocket communication.
 - **User Registration and Authentication**: Players can register and log in to their accounts.
@@ -52,14 +62,3 @@ This project is a real-time poker game for two players. The game allows two play
 - **Others**:
   - **BCrypt**: For password hashing and security.
 
-## Getting Started
-
-### Prerequisites
-- Java 11 or higher
-- MySQL
-- Maven
-
-
-
-### Viewing the Scoreboard
-- Go to `/scoreboard` to see the ranking of players based on the number of trophies won.
