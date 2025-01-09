@@ -10,7 +10,7 @@ This project is a real-time poker game for two players. The game allows two play
 - MySQL
 - Maven
 - Docker
-- 
+  
 1. **Clone the repository**:
     ```
     git clone https://github.com/pleewson/PokerOnline.git
