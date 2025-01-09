@@ -13,7 +13,11 @@ This project is a real-time poker game for two players. The game allows two play
     ```
     docker-compose up --build
     ```
-
+    
+4. **Access the application**:
+    - Open your web browser and go to `http://localhost:8080`
+  
+   
     ## Usage
 
 ### User Registration and Login
@@ -55,8 +59,6 @@ This project is a real-time poker game for two players. The game allows two play
 - MySQL
 - Maven
 
-4. **Access the application**:
-    - Open your web browser and go to `http://localhost:8080`.
 
 
 ### Viewing the Scoreboard
