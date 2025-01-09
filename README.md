@@ -46,10 +46,9 @@ This project is a real-time poker game for two players. The game allows two play
       spring.jpa.hibernate.ddl-auto=update
       ```
 
-3. **Build and run the application**:
+3. **Run the application**:
     ```
-    mvn clean install
-    mvn spring-boot:run
+    docker-compose up --build
     ```
 
 4. **Access the application**:
